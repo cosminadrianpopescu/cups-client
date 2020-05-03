@@ -1,0 +1,8 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "cups-client",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
