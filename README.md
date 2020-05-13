@@ -34,5 +34,22 @@ you can build it.
 ```
 git clone https://github.com/cosminadrianpopescu/cups-client
 cd cups-client
+npm install
+npx cap add android
+cp ./AndroidManifest.xml ./android/app/src/main/
+ionic build --prod
+npx cap copy
+cd android
+./gradlew assembleRelease
+```
 
+After this you'll find the apk in
+`android/app/build/outputs/apk/release/app-release-unsigned.apk`. You need
+to sign this file before installing, like shown
+[here](https://ionicframework.com/docs/v1/guide/publishing.html):
+
+```
+keytool -genkey -v -keystore my-release-key.keystore -alias cups-client -keyalg RSA -keysize 2048 -validity 10000
+mv app-release-unsigned.apk cups.client.apk
+jarsigner -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore cups.client.apk cups-client
 ```
