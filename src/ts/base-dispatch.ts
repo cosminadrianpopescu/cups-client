@@ -10,6 +10,8 @@ export class BaseComponentWithDispatch extends BaseComponent {
   @NgInject(WebIntent) private __intent__: WebIntent;
   @NgInject(Cups) private __cups__: Cups;
 
+  private __isDispatcher__ = true;
+
   protected async _handleError(err: Error) {
     await this.hideLoading();
     console.error(err);

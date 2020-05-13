@@ -47,14 +47,8 @@ export class BaseComponent extends BaseClass {
     return this;
   }
 
-  private _isDispatcher(component: any): boolean {
-    if (component.name == '') {
-      return false;
-    }
-    if (component.name == 'BaseComponentWithDispatch') {
-      return true;
-    }
-    return this._isDispatcher(component.__proto__);
+  private _isDispatcher(): boolean {
+    return typeof(this['__isDispatcher__']) != 'undefined' && this['__isDispatcher__'] == true;
   }
 
   private __cycles__: Map<string, Array<string>> = new Map<string, Array<string>>();
@@ -91,7 +85,7 @@ export class BaseComponent extends BaseClass {
   }
 
   private async ionViewDidEnter() {
-    if (this._isDispatcher(this.constructor)) {
+    if (this._isDispatcher()) {
       const result = await this['__doDispatch__']();
       // If we did a dispatch
       if (result === true) {

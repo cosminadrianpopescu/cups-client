@@ -35,9 +35,9 @@ you can build it.
 git clone https://github.com/cosminadrianpopescu/cups-client
 cd cups-client
 npm install
+ionic build --prod
 npx cap add android
 cp ./AndroidManifest.xml ./android/app/src/main/
-ionic build --prod
 npx cap copy
 cd android
 ./gradlew assembleRelease
@@ -49,7 +49,14 @@ to sign this file before installing, like shown
 [here](https://ionicframework.com/docs/v1/guide/publishing.html):
 
 ```
+cd ./app/build/outputs/apk/release/
 keytool -genkey -v -keystore my-release-key.keystore -alias cups-client -keyalg RSA -keysize 2048 -validity 10000
 mv app-release-unsigned.apk cups.client.apk
 jarsigner -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore cups.client.apk cups-client
 ```
+
+Please note that the Cordova HTTP plugin has a default timeout on connections
+of 30 seconds. I've modified manually in the code of the plugin this timeout
+to the timeout indicated in the options of the javascript remote call. The
+problem is that if you cannot connect to the CUPS server, it takes 30 seconds
+until you get an error message.
