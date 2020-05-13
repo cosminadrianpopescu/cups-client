@@ -1,0 +1,9 @@
+<div>
+  <input style="display: none" #file type="file"/>
+  <ion-list>
+    <ion-item *ngFor="let p of view._printers"  (click)="view._selected(p)">
+      <ion-label>{{p.name}}</ion-label>
+      <ion-badge (click)="view._default($event, p)" color="{{p.default ? 'primary' : 'light'}}">default</ion-badge>
+    </ion-item>
+  </ion-list>
+</div>

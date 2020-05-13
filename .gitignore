@@ -26,6 +26,8 @@ npm-debug.log*
 /coverage
 /dist
 /node_modules
+/android
+/out-tsc
 /platforms
 /plugins
 /www

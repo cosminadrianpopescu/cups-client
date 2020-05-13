@@ -1,0 +1,38 @@
+<div>
+  <ion-list>
+    <ion-item-group>
+      <ion-item-divider>
+        <ion-item>
+          <ion-label>Pages:</ion-label>
+          <ion-input (ionChange)="view._pages=$event.detail.value" mode="md"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Copies:</ion-label>
+          <ion-input inputmode="numeric" type="numer" min="1" max="100" step="1" value="1" (ionChange)="view._copies=$event.detail.value"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fit to page</ion-label>
+          <ion-toggle [value]="view._fit" (ionChange)="view._fit = !view._fit"></ion-toggle>
+        </ion-item>
+      </ion-item-divider>
+    </ion-item-group>
+    <ion-item-divider>Standard options</ion-item-divider>
+    <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._printer?.options}"></ng-container>
+    <ion-item-divider>Advanced options</ion-item-divider>
+    <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._ppd}"></ng-container>
+  </ion-list>
+  <div class="bottom" (click)="view._print()">
+    <ion-fab><ion-fab-button><ion-icon name="print-outline"></ion-icon></ion-fab-button></ion-fab>
+  </div>
+</div>
+
+<ng-template #options let-groups>
+  <ion-item *ngFor="let group of groups">
+    <ion-label>{{group.name}}</ion-label>
+    <ion-select interface="action-sheet" (ionChange)="view._select($event, group)" [value]="group.default">
+      <ion-select-option *ngFor="let option of group.options" [value]="option.key">
+        {{option.value}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+</ng-template>

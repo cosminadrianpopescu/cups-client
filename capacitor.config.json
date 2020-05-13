@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "cups.client",
   "appName": "cups-client",
   "bundledWebRuntime": false,
   "npmClient": "npm",

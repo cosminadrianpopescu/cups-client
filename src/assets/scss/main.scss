@@ -1,0 +1,8 @@
+ion-content > ion-router-outlet > * > div {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66px;
+}

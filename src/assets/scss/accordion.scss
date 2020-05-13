@@ -1,0 +1,11 @@
+.card-header{
+  color: #fff;
+}
+.card-content {
+  padding: 0px 16px; 
+  max-height: 0px;
+}
+
+.content {
+  transition: max-height 500ms, padding 500ms;
+}

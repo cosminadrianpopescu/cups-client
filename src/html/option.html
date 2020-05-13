@@ -1,0 +1,6 @@
+<ion-label>{{group.name}}</ion-label>
+<ion-select interface="popover" (ionChange)="view._select($event)" [value]="group.default">
+  <ion-select-option *ngFor="let option of group.options" [value]="option.key">
+    {{option.value}}
+  </ion-select-option>
+</ion-select>

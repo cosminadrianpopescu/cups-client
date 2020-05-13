@@ -1,0 +1,10 @@
+cups-option {
+  width: 100%;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 80px;
+  left: calc(50% - 20px);
+  z-index: 99;
+}

@@ -1,0 +1,16 @@
+<ion-app>
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button [hidden]="!view._back" defaultHref="printers"></ion-back-button>
+      </ion-buttons>
+      <ion-title>
+        {{view._title$ | async}}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content fullscreen>
+    <ion-router-outlet></ion-router-outlet>
+  </ion-content>
+</ion-app>
