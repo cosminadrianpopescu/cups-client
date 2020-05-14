@@ -6,17 +6,20 @@ export type TestCase = {method: string, name: string};
 
 export const TEST_CASES: Map<Function, Array<TestCase>> = new Map<Function, Array<TestCase>>();
 
+export const METADATA: Map<Function, Map<string, Array<any>>> = new Map<Function, Map<string, Array<any>>>();
+
 function __decorate(protoName: string, arg: Type<any> | string | CycleType) {
   return function(ctor: any, property: string) {
-    if (typeof(ctor.constructor.prototype[protoName]) == 'undefined') {
-      ctor.constructor.prototype[protoName] = new Map<string, Object>();
+    if (!METADATA.get(ctor.constructor)) {
+      METADATA.set(ctor.constructor, new Map<string, Array<string>>());
+    }
+    const m = METADATA.get(ctor.constructor);
+
+    if (typeof(m.get(protoName)) == 'undefined') {
+      m.set(protoName, []);
     }
 
-    if (typeof(ctor.constructor.prototype[protoName].get(ctor.constructor.name)) == 'undefined') {
-      ctor.constructor.prototype[protoName].set(ctor.constructor.name, []);
-    }
-
-    ctor.constructor.prototype[protoName].get(ctor.constructor.name).push({prop: property, arg: arg});
+    m.get(protoName).push({prop: property, arg: arg});
   }
 }
 

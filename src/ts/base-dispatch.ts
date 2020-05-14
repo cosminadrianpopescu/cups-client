@@ -1,7 +1,7 @@
 import {WebIntent} from '@ionic-native/web-intent/ngx';
 import {combineLatest} from 'rxjs';
 import {BaseComponent} from './base';
-import {NgInject} from './decorators';
+import {NgInject, NgCycle} from './decorators';
 import {ServerStatus} from './models';
 import {Cups} from './services/cups';
 import {App} from './services/app';
@@ -16,6 +16,11 @@ export class BaseComponentWithDispatch extends BaseComponent {
     await this.hideLoading();
     console.error(err);
     await this.alert(err.message || err['error'] || err.name || err.constructor.name);
+  }
+
+  @NgCycle('init')
+  protected __initDispatch__() {
+    console.log('init in dispatch');
   }
 
   protected async __doDispatch__(): Promise<boolean> {

@@ -1,9 +1,9 @@
-import {EventEmitter, Injector, Input, Output, Provider, SimpleChanges, TemplateRef} from '@angular/core';
+import {EventEmitter, Injector, Provider, SimpleChanges, TemplateRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {LoadingController, ToastController} from '@ionic/angular';
 import {Observable, Subscription} from 'rxjs';
-import {CycleType, NgInject} from './decorators';
+import {CycleType, METADATA, NgInject} from './decorators';
 import {Logger, LoggingInstance} from './services/logging';
 
 export class Statics {
@@ -16,9 +16,9 @@ class BaseClassWithDecorations {
     if (component.name == '') {
       return ;
     }
-    const values: Map<string, Array<Object>> = this.constructor.prototype[protoName] || new Map<string, Array<Object>>();
-    if (Array.isArray(values.get(component.name))) {
-      values.get(component.name).forEach(<any>callback.bind(this));
+    const values: Map<string, Array<Object>> = METADATA.get(component) || new Map<string, Array<Object>>();
+    if (Array.isArray(values.get(protoName))) {
+      values.get(protoName).forEach(<any>callback.bind(this));
     }
 
     this.__resolveDecorations__(protoName, component.__proto__, callback);
