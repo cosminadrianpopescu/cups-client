@@ -18,11 +18,6 @@ export class BaseComponentWithDispatch extends BaseComponent {
     await this.alert(err.message || err['error'] || err.name || err.constructor.name);
   }
 
-  @NgCycle('init')
-  protected __initDispatch__() {
-    console.log('init in dispatch');
-  }
-
   protected async __doDispatch__(): Promise<boolean> {
     if (App.state.status) {
       return ;

@@ -39,6 +39,7 @@ ionic build --prod
 npx cap add android
 cp ./AndroidManifest.xml ./android/app/src/main/
 npx cap copy
+node ./resources/resources.js
 cd android
 ./gradlew assembleRelease
 ```

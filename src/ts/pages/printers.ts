@@ -20,7 +20,6 @@ export class Printers extends BaseComponentWithDispatch {
 
   @NgCycle('init')
   protected async _initMe() {
-    console.log('init in printing');
     await this.showLoading("Fetching the list of printers")
     this._printers = this._cups.printers;
     await this.hideLoading();
