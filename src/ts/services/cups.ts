@@ -9,7 +9,6 @@ import {Http} from './http';
 import {Store} from './store';
 import {App} from './app';
 
-const KEY = 'servers';
 const DEFAULT_KEY = 'defaultPrinter';
 
 @Injectable()
@@ -21,11 +20,8 @@ export class Cups extends BaseClass {
   public status$: ReplaySubject<ServerStatus> = new ReplaySubject<ServerStatus>(1);
   private _server: CupsServer;
 
-  private async _init() {
-    this.servers = await this._store.load(KEY, CupsServer) as Array<CupsServer>;
-    if (!Array.isArray(this.servers)) {
-      this.servers = [];
-    }
+  public async init() {
+    this.servers = await this._store.servers();
 
     if (this.servers.length == 1) {
       this._server = this.servers[0];
@@ -33,6 +29,7 @@ export class Cups extends BaseClass {
       const [err, result] = await to(this._printers(4));
       if (err) {
         App.state.error = err;
+        console.log('push error');
         this.status$.next(ServerStatus.ERROR);
         return ;
       }
@@ -47,7 +44,7 @@ export class Cups extends BaseClass {
 
   constructor() {
     super();
-    this._init();
+    this.init();
 
     this.status$.pipe(filter(s => s == ServerStatus.READY), take(1)).subscribe(() => this._http.init(this._server.url));
   }
@@ -55,8 +52,8 @@ export class Cups extends BaseClass {
   public async add(s: CupsServer): Promise<void>{
     this.servers.push(s);
     this._server = s;
-    await this._store.save(KEY, this.servers);
-    await this._init();
+    await this._store.setServers(this.servers);
+    await this.init();
   }
 
   private async _doCupsJob(name: string, printer: Printer, attributes: Object, data: ArrayBuffer): Promise<Object> {
@@ -264,6 +261,15 @@ export class Cups extends BaseClass {
       }
     }
     return result;
+  }
+
+  public async updateCurrent(s: CupsServer) {
+    if (!this._server) {
+      return ;
+    }
+    this._server.url = s.url;
+    await this._store.setServers(this.servers);
+    await this.init();
   }
 
   public async getPpd(printer: Printer): Promise<Array<PrinterOptionsGroup>> {

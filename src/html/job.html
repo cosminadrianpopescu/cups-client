@@ -4,20 +4,20 @@
       <ion-item-divider>
         <ion-item>
           <ion-label>Pages:</ion-label>
-          <ion-input (ionChange)="view._pages=$event.detail.value" mode="md"></ion-input>
+          <ion-input inputmode="numeric" (ionChange)="view._pages=$event.detail.value" mode="md"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Copies:</ion-label>
           <ion-input inputmode="numeric" type="numer" min="1" max="100" step="1" value="1" (ionChange)="view._copies=$event.detail.value"></ion-input>
         </ion-item>
-        <ion-item>
-          <ion-label>Fit to page</ion-label>
-          <ion-toggle [value]="view._fit" (ionChange)="view._fit = !view._fit"></ion-toggle>
-        </ion-item>
       </ion-item-divider>
     </ion-item-group>
     <ion-item-divider>Standard options</ion-item-divider>
     <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._printer?.options}"></ng-container>
+    <ion-item>
+      <ion-label>Fit to page</ion-label>
+      <ion-toggle [value]="view._fit" (ionChange)="view._fit = !view._fit"></ion-toggle>
+    </ion-item>
     <ion-item-divider>Advanced options</ion-item-divider>
     <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._ppd}"></ng-container>
   </ion-list>

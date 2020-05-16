@@ -12,6 +12,11 @@ export class BaseComponentWithDispatch extends BaseComponent {
 
   private __isDispatcher__ = true;
 
+  private dispatch(result: boolean, resolve: Function) {
+    resolve(result);
+    App.dispatchDone$.next(true);
+  }
+
   protected async _handleError(err: Error) {
     await this.hideLoading();
     console.error(err);
@@ -31,7 +36,7 @@ export class BaseComponentWithDispatch extends BaseComponent {
         console.log('data is', intent, status);
         if (status == ServerStatus.ERROR) {
           this._handleError(App.state.error);
-          resolve(true);
+          this.dispatch(true, resolve);
           return ;
         }
         App.state.status = status;
@@ -40,12 +45,12 @@ export class BaseComponentWithDispatch extends BaseComponent {
         if (App.state.status == ServerStatus.NO_SERVER && !this._router.url.match(/servers$/g)) {
           console.log('we got no servers');
           this.navigate('servers');
-          resolve(true);
+          this.dispatch(true, resolve);
           return ;
         }
 
         if (App.state.status == ServerStatus.READY) {
-          resolve(!this._router.url.match(/printers$/));
+          this.dispatch(!this._router.url.match(/printers$/), resolve);
           const d = this.__cups__.printers.find(p => p.default);
           if (App.isShare && d) {
             App.state.printer = d;
@@ -58,12 +63,12 @@ export class BaseComponentWithDispatch extends BaseComponent {
         }
 
         if (this._router.url.match(/job$/) && App.state.intent.clipItems.length == 0) {
-          resolve(true);
+          this.dispatch(true, resolve);
           this.navigate('printers');
           return ;
         }
 
-        resolve(false);
+        this.dispatch(false, resolve);
       });
     });
   }

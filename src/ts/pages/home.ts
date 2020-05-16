@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
-import {BaseComponentWithDispatch} from '../base-dispatch';
+import {BaseComponent} from '../base';
 
 @Component({
   selector: 'app-home',
   templateUrl: '../../html/home.html',
   styleUrls: ['../../assets/scss/home.scss'],
 })
-export class Home extends BaseComponentWithDispatch {
+export class Home extends BaseComponent {
 
 }

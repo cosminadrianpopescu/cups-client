@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BaseComponentWithDispatch} from '../base-dispatch';
+import {BaseComponent} from '../base';
 import {NgCycle, NgInject} from '../decorators';
 import {Printer, PrinterOptionsGroup, to} from '../models';
 import {App} from '../services/app';
@@ -12,7 +12,7 @@ import {Navigation} from '../services/navigation';
   templateUrl: '../../html/job.html',
   styleUrls: ['../../assets/scss/job.scss']
 })
-export class Job extends BaseComponentWithDispatch {
+export class Job extends BaseComponent {
   @NgInject(Cups) private _cups: Cups;
   @NgInject(File) private _file: File;
   @NgInject(Navigation) private _nav: Navigation;
@@ -29,7 +29,6 @@ export class Job extends BaseComponentWithDispatch {
   @NgCycle('init')
   protected async _initMe() {
     const intent = App.state.intent;
-    console.log('init with intent', intent);
     this._nav.title$.next(App.state.printer.name);
     await this.showLoading('Retrieving printer options');
     const path = intent.clipItems[0].uri;

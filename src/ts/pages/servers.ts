@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {BaseComponentWithDispatch} from '../base-dispatch';
-import {NgInject, NgCycle} from '../decorators';
+import {BaseComponent} from '../base';
+import {NgCycle, NgInject} from '../decorators';
 import {CupsServer, to} from '../models';
 import {Cups} from '../services/cups';
 
@@ -8,7 +8,7 @@ import {Cups} from '../services/cups';
   selector: 'servers',
   templateUrl: '../../html/servers.html',
 })
-export class Servers extends BaseComponentWithDispatch {
+export class Servers extends BaseComponent {
   protected _url: string;
   protected _loaded: boolean = false;
   @NgInject(Cups) private _cups: Cups;
@@ -25,6 +25,7 @@ export class Servers extends BaseComponentWithDispatch {
 
   @NgCycle('init')
   protected _initMe() {
+    console.log('init servers');
     this._loaded = true;
   }
 

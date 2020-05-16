@@ -26,14 +26,16 @@ import {Job} from '../pages/job';
 import { Accordion } from '../components/accordion';
 import {Option} from '../components/option';
 import { App } from '../services/app';
-import {Toast} from '@ionic-native/toast/ngx';
+import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
+import { Settings } from '../pages/settings';
+import { Guard } from '../services/guard';
 
 export function WebIntentFactory(p: Platform) {
   return new (p.is('android') ? WebIntent : MockWebIntent)();
 }
 
 @NgModule({
-  declarations: [MainPage, Home, Servers, Printers, Job, Accordion, Option],
+  declarations: [MainPage, Home, Servers, Printers, Job, Accordion, Option, Settings],
   entryComponents: [],
   imports: [
     BrowserModule, IonicModule.forRoot(),
@@ -42,9 +44,9 @@ export function WebIntentFactory(p: Platform) {
   ],
   providers: [
     StatusBar,
-    SplashScreen, Store, 
+    SplashScreen, Store, AndroidPermissions,
     HTTP, Cups, File, Platform, Navigation, Http, FileChooser, App,
-    Toast, 
+    Guard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {provide: WebIntent, useFactory: WebIntentFactory, deps: [Platform]},
   ],

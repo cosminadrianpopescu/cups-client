@@ -1,0 +1,9 @@
+<div>
+  <ion-item>
+    <ion-label>Server URL</ion-label>
+    <ion-input (ionChange)="view._url=$event.detail.value" [value]="view._url"></ion-input>
+  </ion-item>
+  <div>
+    <ion-button (click)="view._save()">Save</ion-button>
+  </div>
+</div>

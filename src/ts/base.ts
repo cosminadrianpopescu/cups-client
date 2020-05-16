@@ -5,6 +5,7 @@ import {LoadingController, ToastController} from '@ionic/angular';
 import {Observable, Subscription} from 'rxjs';
 import {CycleType, METADATA, NgInject} from './decorators';
 import {Logger, LoggingInstance} from './services/logging';
+import {App} from './services/app';
 
 export class Statics {
   public static injector: Injector;
@@ -84,32 +85,42 @@ export class BaseComponent extends BaseClass {
     this._runCycle('change', changes);
   }
 
+  protected async _handleError(err: Error) {
+    await this.hideLoading();
+    console.error(err);
+    await this.alert(err.message || err['error'] || err.name || err.constructor.name);
+  }
+
   private async ionViewDidEnter() {
-    if (this._isDispatcher()) {
-      const result = await this['__doDispatch__']();
-      // If we did a dispatch
-      if (result === true) {
-        // Stop the rest of the page execution
-        return;
-      }
-    }
-    this._runCycle('init');
+    // if (this._isDispatcher()) {
+    //   const result = await this['__doDispatch__']();
+    //   // If we did a dispatch
+    //   if (result === true) {
+    //     // Stop the rest of the page execution
+    //     return;
+    //   }
+    // }
+    this.connect(App.dispatchDone$, () => {
+      this._runCycle('init');
+    });
   }
 
   protected connect<T>(obs: Observable<T>, callback: (t: T) => void) {
     this.__subscriptions__.push(obs.subscribe(callback));
   }
 
-  protected navigate(url: string) {
-    this._router.navigateByUrl(url);
+  protected navigate(url: string): Promise<boolean>{
+    return this._router.navigateByUrl(url);
   }
 
   protected async showLoading(message: string) {
+    console.log('show loading', message, this.constructor.name);
     this._htmlLoading = await this._loading.create({message: message});
     await this._htmlLoading.present();
   }
 
   protected async hideLoading() {
+    console.log('hide loading', this.constructor.name);
     if (this._htmlLoading) {
       await this._htmlLoading.dismiss();
     }

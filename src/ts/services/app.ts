@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Intent} from '@ionic-native/web-intent/ngx';
-import {BaseClass} from '../base';
+import {ReplaySubject} from 'rxjs';
 import {AppState} from '../models';
 
 @Injectable()
-export class App extends BaseClass {
+export class App {
+  public static dispatchDone$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public static state: AppState = {
     intent: null,
     status: null,

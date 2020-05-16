@@ -1,16 +1,38 @@
 <ion-app>
-  <ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button [hidden]="!view._back" defaultHref="printers"></ion-back-button>
-      </ion-buttons>
-      <ion-title>
-        {{view._title$ | async}}
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-menu side="start" content-id="pageId">
+    <ion-header>
+      <ion-toolbar translucent>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item routerLink="settings">
+          <ion-icon name="settings-outline" slot="start"></ion-icon>
+          <ion-label>Settings</ion-label>
+        </ion-item>
+        <ion-item routerLink="printers">
+          <ion-icon name="print-outline" slot="start"></ion-icon>
+          <ion-label>Printers</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
 
-  <ion-content fullscreen>
-    <ion-router-outlet></ion-router-outlet>
-  </ion-content>
+  <div id="pageId" class="ion-page">
+    <ion-header [translucent]="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+          <ion-back-button [hidden]="!view._back" defaultHref="printers"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+          {{view._title$ | async}}
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content fullscreen>
+      <ion-router-outlet></ion-router-outlet>
+    </ion-content>
+  </div>
 </ion-app>
