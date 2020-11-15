@@ -3,6 +3,11 @@
     <ion-label>Server URL</ion-label>
     <ion-input (ionChange)="view._url=$event.detail.value" [value]="view._url"></ion-input>
   </ion-item>
+  <ion-item>
+    <ion-label>Nextcloud URL</ion-label>
+    <ion-input (ionChange)="view._ncCredentials.server=$event.detail.value" [value]="view._ncCredentials?.server"></ion-input>
+    <ion-button (click)="view._ncLogin()">Perform login</ion-button>
+  </ion-item>
   <div>
     <ion-button (click)="view._save()">Save</ion-button>
   </div>

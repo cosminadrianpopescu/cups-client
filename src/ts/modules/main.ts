@@ -29,14 +29,19 @@ import { App } from '../services/app';
 import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
 import { Settings } from '../pages/settings';
 import { Guard } from '../services/guard';
+import { PrintOptions } from '../components/print-options';
+import {Nextcloud} from '../nextcloud/nextcloud';
+import {Webdav} from '../nextcloud/webdav';
+import {Filepick} from '../nextcloud/filepick';
+import * as pipes from '../pipes';
 
 export function WebIntentFactory(p: Platform) {
   return new (p.is('android') ? WebIntent : MockWebIntent)();
 }
 
 @NgModule({
-  declarations: [MainPage, Home, Servers, Printers, Job, Accordion, Option, Settings],
-  entryComponents: [],
+  declarations: [MainPage, Home, Servers, Printers, Job, Accordion, Option, Settings, PrintOptions, Filepick, pipes.HumanFileSize],
+  entryComponents: [PrintOptions, Filepick],
   imports: [
     BrowserModule, IonicModule.forRoot(),
     HttpClientModule,
@@ -46,7 +51,7 @@ export function WebIntentFactory(p: Platform) {
     StatusBar,
     SplashScreen, Store, AndroidPermissions,
     HTTP, Cups, File, Platform, Navigation, Http, FileChooser, App,
-    Guard,
+    Guard, Nextcloud, Webdav,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {provide: WebIntent, useFactory: WebIntentFactory, deps: [Platform]},
   ],

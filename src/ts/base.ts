@@ -114,13 +114,11 @@ export class BaseComponent extends BaseClass {
   }
 
   protected async showLoading(message: string) {
-    console.log('show loading', message, this.constructor.name);
     this._htmlLoading = await this._loading.create({message: message});
     await this._htmlLoading.present();
   }
 
   protected async hideLoading() {
-    console.log('hide loading', this.constructor.name);
     if (this._htmlLoading) {
       await this._htmlLoading.dismiss();
     }

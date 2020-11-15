@@ -1,0 +1,44 @@
+nc-filepick {
+  .ui-tree {
+    width: 100%;
+    overflow-y: auto;
+    min-width: 300px;
+  }
+
+
+  p-tree {
+    width: 100%;
+  }
+
+  .content {
+    overflow-y: auto;
+    max-height: 400px;
+    height: 400px;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .file {
+    font-size: 20px;
+  }
+
+  .selected {
+    background-color: #007ad9;
+    color: white;
+  }
+
+  .size {
+    text-align: right;
+  }
+}
+
+.main {
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+.ui-dialog-maximized .ui-tree {
+  height: calc(100vh - 140px) !important;
+}

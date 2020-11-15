@@ -2,9 +2,11 @@ import { Injectable, Type } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { BaseClass } from '../base';
 import {ModelFactory, CupsServer} from '../models';
+import { NextcloudCredentials } from '../nextcloud/models';
 
 const { Storage } = Plugins;
 const SERVER_KEY = 'servers';
+const NEXTCLOUD_KEY = 'nc';
 
 @Injectable()
 export class Store extends BaseClass {
@@ -28,5 +30,13 @@ export class Store extends BaseClass {
   public async setServers(value: Array<CupsServer>) {
     const toSave = value.map(s => <CupsServer>{url: s.url, name: s.name});
     await this.save(SERVER_KEY, toSave);
+  }
+
+  public nextcloud(): Promise<NextcloudCredentials> {
+    return this.load(NEXTCLOUD_KEY, NextcloudCredentials) as Promise<NextcloudCredentials>;
+  }
+
+  public async saveNextcloud(c: NextcloudCredentials) {
+    return this.save(NEXTCLOUD_KEY, c);
   }
 }

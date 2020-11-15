@@ -122,6 +122,7 @@ export class Cups extends BaseClass {
       'orientation-requested-default', 'sides-supported', 'sides-default'
     ], timeout);
     const result: Array<Printer> = [];
+    console.log('payload is', payload);
     (payload['printer-attributes-tag'] || []).forEach((t: {[x: string]: string;}) => {
       const p = new Printer;
       p.name = t['printer-name'];

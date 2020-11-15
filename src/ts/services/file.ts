@@ -7,11 +7,13 @@ import {take} from 'rxjs/operators';
 import {FileChooser} from '@ionic-native/file-chooser/ngx';
 import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
 import {to} from '../models';
+import {Nextcloud} from '../nextcloud/nextcloud';
 
 @Injectable()
 export class File extends BaseClass {
   @NgInject(Platform) private _platform: Platform;
   @NgInject(FileChooser) private _chooser: FileChooser;
+  @NgInject(Nextcloud) private _nc: Nextcloud;
   @NgInject(AndroidPermissions) private _perm: AndroidPermissions;
   private _file: Blob;
 
@@ -36,7 +38,7 @@ export class File extends BaseClass {
 
   private async _read(f: Blob, resolve: Function, reject: Function, mimeTypes?: Array<string>): Promise<void> {
     if (mimeTypes && mimeTypes.indexOf(f.type) == -1) {
-      reject(new Error('UNKNOWN_TYPE'));
+      reject(new Error('UNKNOWN_TYPE::' + f.type));
     }
     const err = await this._getPermissions();
     if (err) {
@@ -55,7 +57,15 @@ export class File extends BaseClass {
   }
 
   public readFile(path: string, mimeTypes?: Array<string>): Promise<ArrayBuffer> {
-    return new Promise<ArrayBuffer>((resolve, reject) => {
+    return new Promise<ArrayBuffer>(async (resolve, reject) => {
+      if (path.match('nc://')) {
+        const p = /^nc:\/\/([^@]+)@(.*)$/;
+        const name = path.replace(p, '$2');
+        const type = path.replace(p, '$1');
+        const data = await this._nc.download(name);
+        this._read(new Blob([data], {type: type}), resolve, reject, mimeTypes);
+        return ;
+      }
       if (!this._platform.is('android')) {
         // resolve(new ArrayBuffer(0));
         // return ;
@@ -76,10 +86,20 @@ export class File extends BaseClass {
     });
   }
 
-  public async choose(el?: HTMLInputElement): Promise<string> {
+  public async choose(_el?: HTMLInputElement | 'nc'): Promise<string> {
+    if (_el == 'nc') {
+      const files = await this._nc.pickFile();
+      if (files.length > 0) {
+        return 'nc://' + files[0];
+      }
+
+      return null;
+    }
     if (this._platform.is('android')) {
       return this._chooser.open();
     }
+
+    const el = _el as HTMLInputElement;
 
     el.click();
     return new Promise(resolve => fromEvent(el, 'change').pipe(take(1)).subscribe(() => {

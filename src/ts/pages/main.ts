@@ -49,6 +49,7 @@ export class Main extends BaseComponent {
   }
 
   private finishDispatch(result: boolean, resolve: Function) {
+    console.log('finish dispatch');
     resolve(result);
     App.dispatchDone$.next(true);
   }
@@ -57,6 +58,7 @@ export class Main extends BaseComponent {
     if (App.state.status) {
       return ;
     }
+    console.log('begin dispatch');
     await this.showLoading("Connecting to server");
     return new Promise(resolve => {
       combineLatest(
@@ -83,7 +85,6 @@ export class Main extends BaseComponent {
           let dest = 'printers';
           if (App.isShare && d) {
             App.state.printer = d;
-            await this._router.navigateByUrl('printers', {skipLocationChange: true});
             dest = 'job';
           }
           this.navigate(dest);

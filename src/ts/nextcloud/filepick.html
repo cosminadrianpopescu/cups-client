@@ -1,0 +1,24 @@
+<div class="main">
+  <ion-list>
+    <ion-item color="{{i.partialSelected ? 'primary' : null}}" (click)="view._select(i, $event)" *ngFor="let i of view._files">
+      <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{$implicit: i}"></ng-container>
+    </ion-item>
+  </ion-list>
+</div>
+<div style="text-align: center">
+  <ion-button (click)="view._choose()" color="primary">Choose</ion-button>
+</div>
+
+<ng-template #item let-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="9">
+        <ion-icon [name]="item.collapsedIcon"></ion-icon>
+        {{item.label}}
+      </ion-col>
+      <ion-col size="3" style="text-align: right" *ngIf="item.leaf">
+        {{item.data.size | humanFileSize}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>
