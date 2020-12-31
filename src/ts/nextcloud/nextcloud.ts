@@ -1,17 +1,17 @@
 import {Injectable, Type} from '@angular/core';
+import {DialogService, DynamicDialogConfig} from 'primeng/dynamicdialog';
 import {BaseClass} from '../base';
 import {NgInject} from '../decorators';
 import {ModelFactory, to} from '../models';
 import {FilePicker} from './filepicker';
-import {NextcloudCredentials, NextcloudLogin, NextcloudPoll} from './models';
+import {NextcloudCredentials, NextcloudLogin, NextcloudPoll, NextcloudShare, NextcloudShareResult} from './models';
 import {Webdav} from './webdav';
 import {Filepick, FilepickInstance} from './filepick';
 import {take} from 'rxjs/operators';
-import { ModalController } from '@ionic/angular';
 
 @Injectable()
 export class Nextcloud extends BaseClass {
-  @NgInject(ModalController) private _modal: ModalController;
+  @NgInject(DialogService) private _modal: DialogService;
   @NgInject(Webdav) private _webdav: Webdav;
 
   private _lastPath: string = '/';
@@ -26,7 +26,9 @@ export class Nextcloud extends BaseClass {
       options = {};
     }
 
-    options.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    if (options && !options.headers) {
+      options.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    }
     //options.headers = {'OCS-APIRequest': 'true'};
     const result = await fetch(url, options);
     if (result.status < 200 || result.status >= 300) {
@@ -36,13 +38,21 @@ export class Nextcloud extends BaseClass {
     return ModelFactory.instance(json, type) as T;
   }
 
-  private get _isOC(): boolean {
+  public static get isOC(): boolean {
     return window.top && window.top['OC'];
   }
 
-  public setCredentials(credentials: NextcloudCredentials) {
-    this._credentials = credentials;
-    this._webdav.init(credentials);
+  public set credentials(x: NextcloudCredentials) {
+    this._credentials = x;
+    this._webdav.init(x);
+  }
+
+  public get credentials(): NextcloudCredentials {
+    if (this._isNcSetup) {
+      return this._credentials;
+    }
+
+    return FilePicker.credentials;
   }
 
   private get _isNcSetup(): boolean {
@@ -50,7 +60,7 @@ export class Nextcloud extends BaseClass {
   }
 
   public get isNextcloud(): boolean {
-    return this._isOC || this._isNcSetup;
+    return Nextcloud.isOC || this._isNcSetup;
   }
 
   private async _processLastPath(x: Array<string>) {
@@ -67,18 +77,28 @@ export class Nextcloud extends BaseClass {
   }
 
   private async _pickFromApp(maximized: boolean, type: 'file' | 'directory' = 'file'): Promise<Array<string>> {
-    const modal = await this._modal.create({
-      component: Filepick, componentProps: {type: type},
-    });
-    await modal.present();
+    const options: DynamicDialogConfig = {
+      modal: true, header: type == 'file' ? 'Choose a file' : 'Choose a directory', closable: true, closeOnEscape: false,
+      styleClass: 'content', footer: ' ', 
+    }
 
+    if (maximized) {
+      options.styleClass = 'p-dialog-maximized';
+    }
+    else {
+      options.style = {'min-width': '600px'};
+    }
+    const ref = this._modal.open(Filepick, options);
+
+    await new Promise(resolve => setTimeout(resolve));
+    FilepickInstance.instance.type =  type;
     return new Promise(resolve => {
       FilepickInstance.instance.choose.pipe(take(1)).subscribe(files => {
-        resolve(files.map(f => f.mime + '@' + f.filename));
-        modal.dismiss();
+        resolve(files.map(f => f.filename));
+        ref.close();
       });
 
-      modal.onDidDismiss().then(() => resolve([]));
+      ref.onDestroy.pipe(take(1)).subscribe(() => resolve([]));
     });
   }
 
@@ -111,7 +131,10 @@ export class Nextcloud extends BaseClass {
   }
 
   private async _downloadOC(path: string): Promise<ArrayBuffer> {
-    return null;
+    const content = await fetch(`${FilePicker.basePath}/${path}`);
+    const blob = await content.blob();
+    const bin = await blob.arrayBuffer();
+    return bin;
   }
 
   private async _downloadApp(path: string): Promise<ArrayBuffer> {
@@ -145,7 +168,7 @@ export class Nextcloud extends BaseClass {
       return this._poll(poll, n + 1);
     }
 
-    this.setCredentials(result);
+    this.credentials = result;
 
     return result;
   }
@@ -160,5 +183,69 @@ export class Nextcloud extends BaseClass {
     document.body.removeChild(a);
 
     return this._poll(loginData.poll);
+  }
+
+  public async mkdir(path: string) {
+    return await this._webdav.mkdir(path);
+  }
+
+  public async exists(path: string): Promise<boolean> {
+    if (this._isNcSetup) {
+      return this._webdav.exists(path);
+    }
+    return FilePicker.exists(path);
+  }
+
+  private _shareDate(): string {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+
+    return `${d.getFullYear()}-${m < 10 ? '0' : ''}${m}-${day < 10 ? '0': ''}${day}`;
+  }
+
+  public async share(path: string): Promise<NextcloudShare> {
+    const c = this.credentials;
+    const params = {path: path, shareType: 3, expireDate: this._shareDate()};
+    const options: RequestInit = {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'OCS-APIRequest': 'true',
+        'Accept': 'application/json, text/plain, */*',
+      },
+      body: JSON.stringify(params),
+    };
+
+    if (this._isNcSetup) {
+      options.headers['Authorization'] = `Basic ${btoa(c.loginName + ':' + c.appPassword)}`;
+    }
+    const result = await this._rest(
+      `${c.server}/ocs/v2.php/apps/files_sharing/api/v1/shares`,
+      options, NextcloudShareResult,
+    );
+
+    return result.ocs.data;
+  }
+
+  public async unshare(id: string) {
+    const c = this.credentials;
+    const options: RequestInit = {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'OCS-APIRequest': 'true',
+        'Accept': 'application/json, text/plain, */*',
+      }
+    }
+
+    if (this._isNcSetup) {
+      options.headers['Authorization'] = `Basic ${btoa(c.loginName + ':' + c.appPassword)}`;
+    }
+    return this._rest(
+      `${c.server}/ocs/v2.php/apps/files_sharing/api/v1/shares/${id}`,
+      options, Object,
+    );
   }
 }

@@ -1,14 +1,13 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {IonRefresher, Platform, PopoverController} from '@ionic/angular';
+import {IonRefresher, Platform} from '@ionic/angular';
 import {Subscription} from 'rxjs';
 import {BaseComponent} from '../base';
 import {NgCycle, NgInject} from '../decorators';
 import {Printer, ServerStatus, to} from '../models';
+import {Nextcloud} from '../nextcloud/nextcloud';
 import {App} from '../services/app';
 import {Cups} from '../services/cups';
 import {File} from '../services/file';
-import {PrintOptions} from '../components/print-options';
-import {Nextcloud} from '../nextcloud/nextcloud';
 import {Store} from '../services/store';
 
 @Component({
@@ -20,13 +19,14 @@ export class Printers extends BaseComponent {
   @NgInject(Cups) private _cups: Cups;
   @NgInject(File) private _file: File;
   @NgInject(Platform) private _platform: Platform;
-  @NgInject(PopoverController) private _modal: PopoverController;
   @NgInject(Nextcloud) private _nc: Nextcloud;
   @NgInject(Store) private _store: Store;
   protected _printers: Array<Printer>;
   protected _error: boolean = false;
   protected _subscription: Subscription = null;
   protected _isAndroid: boolean;
+  protected _from: boolean = false;
+  protected _selectedPrinter: Printer = null;
 
   @ViewChild('file', {static: true}) private _f: ElementRef<any>;
   @ViewChild('refresher', {static: true}) private _refresher: IonRefresher;
@@ -47,40 +47,37 @@ export class Printers extends BaseComponent {
     this._printers = this._cups.printers;
   }
 
-  private async _doPrint(p: Printer, from: 'local' | 'cloud') {
+  private async _doPrint(from: 'local' | 'cloud') {
+    this._from = false;
     const [err, file] = await to(this._file.choose(from == 'local' ? this._f.nativeElement : 'nc'));
     if (err) {
       console.error(err);
       await this.alert(err.message);
       return ;
     }
+    if (!file) {
+      return ;
+    }
     App.state.intent.clipItems = [{uri: file}];
-    App.state.printer = p;
+    App.state.printer = this._selectedPrinter;
     this.navigate('job');
+    this._selectedPrinter = null;
   }
 
-  protected async _selected(p: Printer, ev: MouseEvent) {
+  protected async _selected(p: Printer) {
     if (App.isShare) {
       App.state.printer = p;
       this.navigate('job');
       return ;
     }
+    this._selectedPrinter = p;
     const nc = await this._store.nextcloud();
     if (!nc) {
-      this._doPrint(p, 'local');
+      this._doPrint('local');
       return ;
     }
-    this._nc.setCredentials(nc);
-    const f = this._doPrint.bind(this);
-    const popover = await this._modal.create({
-      component: PrintOptions,
-      componentProps: {callback: (where) => {
-        f(p, where);
-        popover.dismiss();
-      }},
-      event: ev,
-    });
-    return popover.present();
+    this._nc.credentials = nc;
+    this._from = true;
   }
 
   protected async _default(ev: MouseEvent, p: Printer) {

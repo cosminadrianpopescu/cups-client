@@ -1,23 +1,22 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component} from '@angular/core';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {WebIntent} from '@ionic-native/web-intent/ngx';
 import {Platform} from '@ionic/angular';
-import {Observable, combineLatest} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {BaseComponent} from '../base';
 import {NgInject} from '../decorators';
-import {Navigation} from '../services/navigation';
-import {tap} from 'rxjs/operators';
-import {App} from '../services/app';
-import {WebIntent} from '@ionic-native/web-intent/ngx';
-import {Cups} from '../services/cups';
 import {ServerStatus} from '../models';
+import {App} from '../services/app';
+import {Cups} from '../services/cups';
+import {Navigation} from '../services/navigation';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: '../../html/main.html',
   styleUrls: ['../../assets/scss/main.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class Main extends BaseComponent {
   @NgInject(Navigation) private _nav: Navigation;
@@ -26,6 +25,7 @@ export class Main extends BaseComponent {
 
   protected _title$: Observable<string>;
   protected _back: boolean = false;
+  protected _sidebar: boolean = false;
 
   constructor(
     private platform: Platform,
@@ -52,6 +52,11 @@ export class Main extends BaseComponent {
     console.log('finish dispatch');
     resolve(result);
     App.dispatchDone$.next(true);
+  }
+
+  protected _button(url: string) {
+    this._sidebar = false;
+    this.navigate(url);
   }
 
   private async beginDispatch(): Promise<boolean> {

@@ -1,0 +1,11 @@
+<span [ngClass]="{'p-input-icon-right': icon ? true : false, 'p-float-label': isFloatLabel}">
+  <i *ngIf="icon" [ngClass]="icon" (click)="iconClick.emit()"></i>
+  <input 
+    (keyup)="keyup.emit($event)"
+    #input
+    [type]="type" [id]="view.id" pInputText
+    [ngModel]="model" (ngModelChange)="modelChange.emit($event)"
+    [placeholder]="isFloatLabel ? '' : label"
+    [ngClass]="{'p-invalid': validator != 'none' && !isValid}"/>
+  <label *ngIf="isFloatLabel" [for]="view.id">{{label}}</label>
+</span>

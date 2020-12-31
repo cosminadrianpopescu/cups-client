@@ -12,7 +12,6 @@ export class Webdav extends BaseClass {
   private _ready$: ReplaySubject<void> = new ReplaySubject(1);
 
   public async init(credentials: NextcloudCredentials) {
-    console.log('init webdav with', credentials);
     if (!credentials) {
       return ;
     }
@@ -23,7 +22,7 @@ export class Webdav extends BaseClass {
   }
 
   public async getFiles(path: string): Promise<Array<NextcloudItem>> {
-    await new Promise(resolve => this._ready$.pipe(take(1)).subscribe(<any>resolve));
+    await new Promise(resolve => this._ready$.pipe(take(1)).subscribe(resolve));
     const result: Array<NextcloudItem> = await this._client.getDirectoryContents(path);
     result.sort((a, b) => {
       if (a.type == b.type) {
@@ -40,6 +39,22 @@ export class Webdav extends BaseClass {
   }
 
   public async upload(path: string, content: Blob): Promise<void> {
-    this._client.putFileContents(path, content);
+    await this._client.putFileContents(path, content, {overwrite: true});
+  }
+
+  public async mkdir(path: string): Promise<void> {
+    return this._client.createDirectory(path);
+  }
+
+  public async exists(path: string): Promise<boolean> {
+    return this._client.exists(path);
+  }
+
+  public async getFileUrl(path: string): Promise<string> {
+    return this._client.getFileDownloadLink(path);
+  }
+
+  public async getStats(path: string): Promise<Object> {
+    return this._client.stat(path);
   }
 }

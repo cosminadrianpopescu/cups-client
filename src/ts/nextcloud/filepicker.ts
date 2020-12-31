@@ -1,6 +1,7 @@
 /// <reference types="@nextcloud/typings" />
 
 import {to} from '../models';
+import {NextcloudCredentials} from './models';
 
 declare var OC: Nextcloud.v16.OC | Nextcloud.v17.OC | Nextcloud.v18.OC | Nextcloud.v19.OC;
 
@@ -65,6 +66,14 @@ export class FilePicker {
     });
   }
 
+  public static get credentials(): NextcloudCredentials {
+    const result = new NextcloudCredentials();
+    result.appPassword = OC['requestToken'];
+    result.loginName = OC['currentUser'];
+    result.server = window.location.origin;
+    return result;
+  }
+
   public static get basePath(): string {
     return OC['Files'].getClient().getBaseUrl();
   }
@@ -97,6 +106,10 @@ export class FilePicker {
     const _path = await FilePicker._getPath(path);
     await OC['Files'].getClient().putFileContents(_path, content);
     return _path;
+  }
+
+  public static async exists(path: string): Promise<boolean> {
+    return new Promise(resolve => OC['Files'].getClient().getFileInfo(path).then(() => resolve(true)).fail(() => resolve(false)));
   }
 }
 

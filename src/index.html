@@ -18,6 +18,135 @@
   <!-- add to homescreen for ios -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <style id="custom-style">
+    .fa.thin {
+      font-weight: 400 !important;
+    }
+    .p-tabview > ul {
+      justify-content: space-evenly;
+    }
+    .p-overlaypanel:after, .p-overlaypanel:before {
+      left: calc(var(--overlayArrowLeft, 0) + 0.8rem) !important;
+    }
+    .p-toolbar.p-component, ul.p-tabview-nav {
+      height: 3rem !important;
+    }
+    .p-tabview > ul > li {
+      display: flex;
+      flex: 1;
+      width: 100%;
+    }
+    .p-tabview > ul > li > a {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .p-tabview-ink-bar {
+      display: none !important;
+    }
+    .highlighted {
+      color: var(--primary-color);
+    }
+    .p-button.p-button-text.p-button-no-hover:enabled:hover {
+      background: var(--primary-color-text) !important;
+    }
+    dav-settings .p-panel-content {
+      padding: 0px !important;
+    }
+    p-chips ul, .p-chips {
+      width: 100%;
+    }
+    .p-dropdown-label.p-inputtext, .p-chips .p-inputtext.p-focus {
+      border-bottom: none !important;
+    }
+    .p-float-label input:focus ~ label, .p-float-label input.p-filled ~ label, .p-float-label textarea:focus ~ label, .p-float-label textarea.p-filled ~ label, .p-float-label .p-inputwrapper-focus ~ label, .p-float-label .p-inputwrapper-filled ~ label {
+      top: -0.25rem !important;
+    }
+    dav-details p-card .p-card {
+      margin: 0.5rem;
+    }
+    dav-details p-card .p-card-content {
+      padding: 0px !important;
+    }
+    .p-button.p-button-lg {
+      font-size: 1.5rem !important;
+      padding: 0.825rem 1.5rem !important;
+    }
+    .p-button.p-button-lg .p-button-icon {
+      font-size: 1.5rem !important;
+    }
+    .p-button.p-button-icon-only.p-button-rounded.p-button-lg {
+      height: 2.7rem !important;
+    }
+    .p-button:focus, .p-tabview *:focus, .p-chips .p-focus {
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .p-inputtext {
+      border: none !important;
+      border-bottom: 1px solid #ced4da !important;
+      border-radius: 0px !important;
+      background-color: transparent !important;
+    }
+
+    .p-datatable-resizable .p-datatable-tbody>tr>td {
+      white-space: inherit !important;
+    }
+
+    .p-inputtext:enabled:focus, .p-inputwrapper-focus .p-chips {
+      border-bottom: 1px solid #2196F3 !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .p-dropdown:not(.p-disabled).p-focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    p-dynamicdialog .p-dialog-content {
+      padding: 0px !important;
+    }
+
+    .p-button:disabled {
+      opacity: 0.2 !important;
+    }
+
+    body.light {
+      background-color: white;
+    }
+
+    .p-blockui {
+      z-index: 2000;
+    }
+
+    .p-toolbar {
+      padding: 0.5rem !important;
+    }
+
+    dav-panel .p-panel-header {
+      background: none !important;
+    }
+
+    dav-panel .p-toggleable-content {
+      background: none !important;
+    }
+
+    dav-panel .p-toggleable-content[aria-hidden="true"] {
+      border-bottom: 1px solid var(--surface-d);
+    }
+
+    [ng-reflect-severity="disabled"]>.p-tag {
+      background: var(--surface-d);
+    }
+  </style>
+
+  <style>
+    cups-printers {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>

@@ -1,4 +1,5 @@
-import {NextcloudItem, TreeNode} from './models';
+import {NextcloudItem} from './models';
+import {TreeNode} from 'primeng/api/treenode';
 
 export class NextcloudUtils {
   public static fileIcon(f: NextcloudItem): string {
@@ -28,22 +29,8 @@ export class NextcloudUtils {
       leaf: src.type == 'file',
       data: src,
       selectable: true,
-      collapsedIcon: src.type == 'file' ? 'document-outline' : 'folder-outline',
+      collapsedIcon: src.type == 'file' ? NextcloudUtils.fileIcon(src) : 'fa fa-folder-o',
       expandedIcon: 'fa fa-folder-open-o',
-    }
-  }
-
-  public static parentFolder(path: string): TreeNode {
-    return {
-      collapsedIcon: 'folder-outline',
-      selectable: false,
-      leaf: false,
-      data: <NextcloudItem>{
-        type: 'directory',
-        size: 0,
-        filename: path.replace(/^(.*)\/[^\/]+$/, '$1'),
-      },
-      label: '..', 
     }
   }
 }

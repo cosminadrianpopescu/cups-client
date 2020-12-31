@@ -1,5 +1,10 @@
 import { Type } from '@angular/core';
 
+export interface Convertor<T> {
+  convert(src: any): T;
+  convertFrom?(src: T): any;
+}
+
 export type CycleType = 'destroy' | 'afterViewInit' | 'change' | 'init';
 
 export type TestCase = {method: string, name: string};
@@ -8,7 +13,9 @@ export const TEST_CASES: Map<Function, Array<TestCase>> = new Map<Function, Arra
 
 export const METADATA: Map<Function, Map<string, Array<any>>> = new Map<Function, Map<string, Array<any>>>();
 
-function __decorate(protoName: string, arg: Type<any> | string | CycleType) {
+export type DeserializableType<T> = Type<T> | 'date' | Convertor<T>;
+
+function __decorate(protoName: string, arg: Type<any> | string | CycleType | DeserializableType<any>) {
   return function(ctor: any, property: string) {
     if (!METADATA.get(ctor.constructor)) {
       METADATA.set(ctor.constructor, new Map<string, Array<string>>());
@@ -38,4 +45,17 @@ export function NgTest(name?: string) {
     }
     TEST_CASES.get(ctor.constructor).push({name: name, method: property});
   }
+}
+
+
+export function deserialize<T extends Object>(type: DeserializableType<T>) {
+  return __decorate('__deserializers__', type);
+}
+
+export function deserializers(ctor: Function): Array<any> {
+  if (!METADATA.get(ctor)) {
+    return [];
+  }
+
+  return METADATA.get(ctor).get('__deserializers__');
 }

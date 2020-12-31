@@ -1,8 +1,26 @@
-ion-content > ion-router-outlet > * > div {
-  text-align: center;
+.content {
+  display: flex;
+  height: calc(100vh - 3rem);
+  flex: 1;
+  width: 100%;
+}
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 66px;
+.flex {
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  &--column {
+    flex-direction: column;
+    align-items: flex-start;
+    cups-button {
+      margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
+      display: flex;
+    }
+  }
+}
+
+cups-printers {
+  width: 100%;
 }

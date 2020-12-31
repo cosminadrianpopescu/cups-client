@@ -1,0 +1,17 @@
+<p-button
+      (click)="view._click($event)"
+      [tabindex]="tabindex"
+      [disabled]="disabled"
+      styleClass="{{styleClass}} {{isText ? 'p-button-text' : ''}} {{noWrap ? 'no-wrap' : ''}}"
+      [icon]="icon" [label]="label"></p-button>
+
+<!--button
+    (click)="view._click($event)"
+    class="p-button p-component {{styleClass}} {{isText ? 'p-button-text' : ''}} {{noWrap ? 'no-wrap' : ''}}"
+    [ngClass]="{'p-button-icon-only': !!icon && !label}">
+    <span
+      class="p-button-icon {{icon}}"
+      aria-hidden="true" [hidden]="!icon"
+      [ngClass]="{'p-button-icon-left': !!icon && !!label}"></span>
+    <span aria-hidden="true" class="p-button-label" [innerHTML]="(label || '&nbsp;') | asHtml"></span>
+  </button-->

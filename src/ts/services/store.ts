@@ -1,8 +1,8 @@
-import { Injectable, Type } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-import { BaseClass } from '../base';
-import {ModelFactory, CupsServer} from '../models';
-import { NextcloudCredentials } from '../nextcloud/models';
+import {Injectable, Type} from '@angular/core';
+import {Plugins} from '@capacitor/core';
+import {BaseClass} from '../base';
+import {CupsServer, ModelFactory} from '../models';
+import {NextcloudCredentials} from '../nextcloud/models';
 
 const { Storage } = Plugins;
 const SERVER_KEY = 'servers';
@@ -15,7 +15,7 @@ export class Store extends BaseClass {
     if (!result.value) {
       return null;
     }
-    return ModelFactory.instance(JSON.parse(result.value).data, type);
+    return ModelFactory.instance(JSON.parse(result.value).data, type) as T | T[];
   }
 
   public async save(key: string, data: any): Promise<void> {

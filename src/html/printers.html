@@ -1,15 +1,16 @@
-<div>
-  <ion-refresher #refresher slot="fixed" (ionRefresh)="view._retry()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <input style="display: none" #file type="file"/>
-  <ion-list>
-    <ion-item *ngFor="let p of view._printers"  (click)="view._selected(p, $event)">
-      <ion-label>{{p.name}}</ion-label>
-      <ion-badge (click)="view._default($event, p)" color="{{p.default ? 'primary' : 'light'}}">default</ion-badge>
-    </ion-item>
-    <div class="center" [hidden]="!view._error || view._isAndroid">
-      <ion-button (click)="view._retry()">Retry</ion-button>
-    </div>
-  </ion-list>
+<!--ion-refresher #refresher slot="fixed" (ionRefresh)="view._retry()">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher-->
+<input style="display: none" #file type="file"/>
+<div *ngFor="let p of view._printers" class="flex" (click)="view._selected(p)">
+  <div class="left">{{p.name}}</div>
+  <cups-tag [severity]="p.default ? 'primary' : 'disabled'" label="default" (click)="view._default($event, p)"></cups-tag>
 </div>
+<cups-button [hidden]="!view._error || view._isAndroid" label="Retry" icon="fa fa-undo" (notify)="view._retry()"></cups-button>
+
+<p-sidebar [(visible)]="view._from" position="bottom" [showCloseIcon]="false">
+  <div class="flex-column">
+    <cups-button icon="fa fa-cloud" label="From cloud" (notify)="view._doPrint('cloud')"></cups-button>
+    <cups-button icon="fa fa-hdd" label="From local" (notify)="view._doPrint('local')"></cups-button>
+  </div>
+</p-sidebar>

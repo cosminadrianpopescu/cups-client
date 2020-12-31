@@ -1,11 +1,12 @@
-import {EventEmitter, Injector, Provider, SimpleChanges, TemplateRef} from '@angular/core';
+import {EventEmitter, Injector, Provider, SimpleChanges, TemplateRef, Injectable, ComponentFactoryResolver, ApplicationRef, ComponentRef, EmbeddedViewRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {LoadingController, ToastController} from '@ionic/angular';
+import {Toast} from '@ionic-native/toast/ngx';
 import {Observable, Subscription} from 'rxjs';
 import {CycleType, METADATA, NgInject} from './decorators';
-import {Logger, LoggingInstance} from './services/logging';
 import {App} from './services/app';
+import {Logger, LoggingInstance} from './services/logging';
+import {Loading} from './components/loading';
 
 export class Statics {
   public static injector: Injector;
@@ -39,10 +40,44 @@ export class BaseClass extends BaseClassWithDecorations {
   }
 }
 
+@Injectable()
+export class Spinner extends BaseClass {
+  @NgInject(<any>ComponentFactoryResolver) private _resolver: ComponentFactoryResolver;
+  @NgInject(ApplicationRef) private _app: ApplicationRef;
+  private _component: ComponentRef<any> = null;
+
+  public async show(): Promise<void> {
+    if (this._component) {
+      return ;
+    }
+
+    this._component = this._resolver.resolveComponentFactory(Loading).create(Statics.injector);
+    this._app.attachView(this._component.hostView);
+    const node = (this._component.hostView as EmbeddedViewRef<any>).rootNodes[0];
+    document.body.appendChild(node);
+  }
+
+  public async hide(): Promise<void> {
+    if (!this._component) {
+      return ;
+    }
+    this._app.detachView(this._component.hostView);
+    this._component.destroy();
+    this._component = null;
+  }
+}
+
 export class BaseComponent extends BaseClass {
   @NgInject(Router) protected _router: Router;
-  @NgInject(LoadingController) private _loading: LoadingController;
-  @NgInject(ToastController) private _toast: ToastController;
+  @NgInject(Toast) private _toast: Toast;
+  @NgInject(Spinner) private _spinner: Spinner;
+
+  public static UUID(): string {
+    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
   public get view(): any {
     return this;
@@ -72,7 +107,7 @@ export class BaseComponent extends BaseClass {
     (this.__cycles__.get(cycle) || []).forEach(method => this[method](args));
   }
 
-  private ionViewDidLeave() {
+  private ngOnDestroy() {
     this._runCycle('destroy');
     this.__subscriptions__.forEach(s => s.unsubscribe());
   }
@@ -91,7 +126,7 @@ export class BaseComponent extends BaseClass {
     await this.alert(err.message || err['error'] || err.name || err.constructor.name);
   }
 
-  private async ionViewDidEnter() {
+  private async ngOnInit() {
     // if (this._isDispatcher()) {
     //   const result = await this['__doDispatch__']();
     //   // If we did a dispatch
@@ -114,14 +149,11 @@ export class BaseComponent extends BaseClass {
   }
 
   protected async showLoading(message: string) {
-    this._htmlLoading = await this._loading.create({message: message});
-    await this._htmlLoading.present();
+    this._spinner.show();
   }
 
   protected async hideLoading() {
-    if (this._htmlLoading) {
-      await this._htmlLoading.dismiss();
-    }
+    this._spinner.hide();
   }
 
   protected get isJobPage(): boolean {
@@ -129,11 +161,7 @@ export class BaseComponent extends BaseClass {
   }
 
   protected async alert(message: string) {
-    const toast = await this._toast.create({
-      message: message,
-      duration: 3000,
-    });
-    toast.present();
+    return this._toast.show(message, '3000', 'center').toPromise();
   }
 }
 

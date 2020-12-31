@@ -1,0 +1,25 @@
+dav-dropdown {
+  .p-dropdown {
+    width: 100%;
+  }
+
+  .flex {
+    width: 100%;
+    display: flex;
+
+    &--column {
+      flex-direction: column;
+      .option {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  p-radioButton {
+    margin-right: 0.5rem;
+  }
+  
+  .option {
+    margin-right: 0.5rem;
+  }
+}

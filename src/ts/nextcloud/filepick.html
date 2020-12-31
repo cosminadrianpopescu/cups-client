@@ -1,24 +1,25 @@
-<div class="main">
-  <ion-list>
-    <ion-item color="{{i.partialSelected ? 'primary' : null}}" (click)="view._select(i, $event)" *ngFor="let i of view._files">
-      <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{$implicit: i}"></ng-container>
-    </ion-item>
-  </ion-list>
-</div>
-<div style="text-align: center">
-  <ion-button (click)="view._choose()" color="primary">Choose</ion-button>
+<div class="">
+  <!--div (click)="view._select(i, $event)" [ngClass]="{selected: i.partialSelected}" class="p-col-12 flex file" *ngFor="let i of view._files">
+    <ng-container [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{$implicit: i}"></ng-container>
+  </div-->
+  <div class="flex">
+    <p-tree #tree [selectionMode]="type == 'file' ? 'checkbox' : 'single'" [value]="view._files" [(selection)]="view._selection" (onNodeExpand)="view._load($event?.node)" [loading]="view._loading"></p-tree>
+  </div>
 </div>
 
+<ng-template #footer>
+  <span>
+    <cups-button icon="fa fa-check" label="Choose" (notify)="view._choose()"></cups-button>
+    <cups-button icon="fa fa-times" label="Cancel" (notify)="view._close()"></cups-button>
+  </span>
+</ng-template>
+
 <ng-template #item let-item>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="9">
-        <ion-icon [name]="item.collapsedIcon"></ion-icon>
-        {{item.label}}
-      </ion-col>
-      <ion-col size="3" style="text-align: right" *ngIf="item.leaf">
-        {{item.data.size | humanFileSize}}
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="p-col-9">
+    <i class="fa-3w {{item.collapsedIcon}}"></i>
+    {{item.label}}
+  </div>
+  <div class="p-col-3 size">
+    {{item.data.size | humanFileSize}}
+  </div>
 </ng-template>
