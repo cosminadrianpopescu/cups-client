@@ -29,6 +29,7 @@ export class Job extends BaseComponent {
   @NgCycle('init')
   protected async _initMe() {
     const intent = App.state.intent;
+    this._nav.title$.next(App.state.printer.name);
     await this.showLoading('Retrieving printer options');
     const path = intent.clipItems[0].uri;
     this._jobName = path.replace(/^.*\/([^\/]+)$/, '$1');
@@ -49,7 +50,6 @@ export class Job extends BaseComponent {
     await this.hideLoading();
     this._printer = App.state.printer;
     this._ppd = ppd;
-    this._nav.title$.next(App.state.printer.name);
   }
 
   protected _select(ev: CustomEvent, group: PrinterOptionsGroup) {

@@ -94,7 +94,7 @@ export class Nextcloud extends BaseClass {
     FilepickInstance.instance.type =  type;
     return new Promise(resolve => {
       FilepickInstance.instance.choose.pipe(take(1)).subscribe(files => {
-        resolve(files.map(f => f.filename));
+        resolve(files.map(f => `${f.mime}@${f.filename}`));
         ref.close();
       });
 
