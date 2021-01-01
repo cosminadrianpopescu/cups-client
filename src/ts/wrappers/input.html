@@ -6,6 +6,6 @@
     [type]="type" [id]="view.id" pInputText
     [ngModel]="model" (ngModelChange)="modelChange.emit($event)"
     [placeholder]="isFloatLabel ? '' : label"
-    [ngClass]="{'p-invalid': validator != 'none' && !isValid}"/>
+    [ngClass]="{'p-invalid': validator != 'none' && !isValid, 'no-border': !withBorder}"/>
   <label *ngIf="isFloatLabel" [for]="view.id">{{label}}</label>
 </span>

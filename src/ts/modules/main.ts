@@ -45,7 +45,7 @@ export function WebIntentFactory(p: Platform) {
 @NgModule({
   declarations: [
     MainPage, Home, Servers, Printers, Job, Accordion, Option,
-    Settings, pipes.HumanFileSize, Loading,
+    Settings, pipes.HumanFileSize, Loading, pipes.ToOptions,
   ],
   entryComponents: [Loading],
   imports: [

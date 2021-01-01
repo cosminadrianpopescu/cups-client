@@ -1,0 +1,9 @@
+<div class="flex" *ngFor="let row of (view._rows$ | async)" [ngClass]="{'flex--separator': !!(row | isSeparator:dataSource)}">
+  <ng-container
+    [ngTemplateOutlet]="!!(row | isSeparator:dataSource) ? separator : tpl"
+    [ngTemplateOutletContext]="{$implicit: (row | isSeparator:dataSource) || row}"></ng-container>
+</div>
+
+<ng-template #separator let-label>
+  {{label}}
+</ng-template>

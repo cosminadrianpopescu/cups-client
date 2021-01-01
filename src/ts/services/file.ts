@@ -59,11 +59,10 @@ export class File extends BaseClass {
   public readFile(path: string, mimeTypes?: Array<string>): Promise<ArrayBuffer> {
     return new Promise<ArrayBuffer>(async (resolve, reject) => {
       if (path.match('nc://')) {
-        const p = /^nc:\/\/(.*)\.([^\.]*)$/;
-        const name = path.replace(p, '$1');
-        const type = path.replace(p, '$2');
-        console.log('name type are', name, type);
-        const data = await this._nc.download(`${name}${type == name ? '' : '.' + type}`);
+        const p = /^nc:\/\/([^@]+)@(.*)$/;
+        const name = path.replace(p, '$2');
+        const type = path.replace(p, '$1');
+        const data = await this._nc.download(name);
         this._read(new Blob([data], {type: type}), resolve, reject, mimeTypes);
         return ;
       }

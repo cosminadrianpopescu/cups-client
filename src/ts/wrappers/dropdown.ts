@@ -1,7 +1,7 @@
 import {Component, Input, SimpleChanges, Output, EventEmitter, ViewEncapsulation} from '@angular/core';
 import {BaseComponent} from '../base';
 import {NgCycle} from '../decorators';
-import {LabelValue} from '../models';
+import {LabelValue} from './models';
 
 @Component({
   selector: 'cups-dropdown',
@@ -16,7 +16,7 @@ export class Dropdown extends BaseComponent {
   @Input() public optionLabel: string = "label";
   @Input() public model: string | LabelValue;
   @Input() public label: string;
-  @Input() public asRadio: boolean = false;
+  @Input() public type: 'dropdown' | 'radio' | 'sheet' = 'dropdown';
   @Input() public vertical: boolean = false;
   @Input() public showClear: boolean = false;
 
@@ -60,5 +60,9 @@ export class Dropdown extends BaseComponent {
     }
 
     this.modelChange.emit(x.value);
+  }
+
+  protected _sheetSelect() {
+    console.log('selecting');
   }
 }

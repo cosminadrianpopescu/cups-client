@@ -1,18 +1,18 @@
-<div>
+<cups-list [tpl]="tpl" [dataSource]="view._ds"></cups-list>
+<ng-template #tpl let-row>
+  <div *ngIf="!row.cupsKey && !row.name" class="flex">
+    <cups-input [withBorder]="false" label="Pages" [(model)]="view._pages"></cups-input>
+    <cups-input [withBorder]="false" type="numeric" label="Copies" [(model)]="view._copies"></cups-input>
+  </div>
+  <div *ngIf="row.cupsKey && row.name" class="flex">
+    <div>{{row.name}}</div>
+    <div class="flex-right">
+      <cups-dropdown [options]="row.options | toOptions" type="sheet" [model]="row.default" (modelChange)="view._select($event, row)"></cups-dropdown>
+    </div>
+  </div>
+</ng-template>
+<!--div>
   <ion-list>
-    <ion-item-group>
-      <ion-item-divider>
-        <ion-item>
-          <ion-label>Pages:</ion-label>
-          <ion-input inputmode="numeric" (ionChange)="view._pages=$event.detail.value" mode="md"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Copies:</ion-label>
-          <ion-input inputmode="numeric" type="numer" min="1" max="100" step="1" value="1" (ionChange)="view._copies=$event.detail.value"></ion-input>
-        </ion-item>
-      </ion-item-divider>
-    </ion-item-group>
-    <ion-item-divider>Standard options</ion-item-divider>
     <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._printer?.options}"></ng-container>
     <ion-item>
       <ion-label>Fit to page</ion-label>
@@ -35,4 +35,4 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-</ng-template>
+</ng-template-->

@@ -2,10 +2,7 @@
   <ion-refresher-content></ion-refresher-content>
 </ion-refresher-->
 <input style="display: none" #file type="file"/>
-<div *ngFor="let p of view._printers" class="flex" (click)="view._selected(p)">
-  <div class="left">{{p.name}}</div>
-  <cups-tag [severity]="p.default ? 'primary' : 'disabled'" label="default" (click)="view._default($event, p)"></cups-tag>
-</div>
+<cups-list [dataSource]="view._ds" [tpl]="tpl"></cups-list>
 <cups-button [hidden]="!view._error || view._isAndroid" label="Retry" icon="fa fa-undo" (notify)="view._retry()"></cups-button>
 
 <p-sidebar [(visible)]="view._from" position="bottom" [showCloseIcon]="false">
@@ -14,3 +11,8 @@
     <cups-button icon="fa fa-hdd" label="From local" (notify)="view._doPrint('local')"></cups-button>
   </div>
 </p-sidebar>
+
+<ng-template #tpl let-p>
+  <div class="left" (click)="view._selected(p)">{{p.name}}</div>
+  <cups-tag [severity]="p.default ? 'primary' : 'disabled'" label="default" (click)="view._default($event, p)"></cups-tag>
+</ng-template>

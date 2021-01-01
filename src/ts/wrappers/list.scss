@@ -1,0 +1,14 @@
+.flex {
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid var(--surface-d);
+  padding: 1rem;
+  align-items: center;
+
+  &--separator {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    font-size: 0.8em;
+    color: var(--text-color-secondary);
+  }
+}

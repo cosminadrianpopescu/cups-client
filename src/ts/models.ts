@@ -1,6 +1,7 @@
 import {Type} from '@angular/core';
 import {Intent} from '@ionic-native/web-intent/ngx';
 import {deserializers, Convertor} from './decorators';
+import {Observable} from 'rxjs';
 
 export enum LogLevel {DEBUG = 0, INFO = 1, ERROR = 2};
 
@@ -113,9 +114,4 @@ export async function to<T>(promise: Promise<T>): Promise<[Error, T]> {
   catch (err) {
     return [err, null];
   }
-}
-
-export class LabelValue {
-  label: string;
-  value: string;
 }

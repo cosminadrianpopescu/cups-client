@@ -9,6 +9,7 @@ import {App} from '../services/app';
 import {Cups} from '../services/cups';
 import {File} from '../services/file';
 import {Store} from '../services/store';
+import {Printers as PrintersDs} from '../datasources/printers';
 
 @Component({
   selector: 'cups-printers',
@@ -21,6 +22,7 @@ export class Printers extends BaseComponent {
   @NgInject(Platform) private _platform: Platform;
   @NgInject(Nextcloud) private _nc: Nextcloud;
   @NgInject(Store) private _store: Store;
+  @NgInject(PrintersDs) protected _ds: PrintersDs;
   protected _printers: Array<Printer>;
   protected _error: boolean = false;
   protected _subscription: Subscription = null;
@@ -44,6 +46,7 @@ export class Printers extends BaseComponent {
 
   @NgCycle('init')
   protected async _initMe() {
+    console.log('ds is', this._ds)
     this._printers = this._cups.printers;
   }
 

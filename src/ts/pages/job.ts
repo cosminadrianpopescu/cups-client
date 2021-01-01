@@ -1,24 +1,26 @@
 import {Component} from '@angular/core';
 import {BaseComponent} from '../base';
 import {NgCycle, NgInject} from '../decorators';
-import {Printer, PrinterOptionsGroup, to} from '../models';
+import {PrinterOptionsGroup, to} from '../models';
 import {App} from '../services/app';
 import {Cups} from '../services/cups';
 import {File} from '../services/file';
 import {Navigation} from '../services/navigation';
+import {PrinterOptions} from '../datasources/printer-options';
 
 @Component({
   selector: 'cups-job',
   templateUrl: '../../html/job.html',
-  styleUrls: ['../../assets/scss/job.scss']
+  styleUrls: ['../../assets/scss/job.scss'],
+  providers: [PrinterOptions],
 })
 export class Job extends BaseComponent {
   @NgInject(Cups) private _cups: Cups;
   @NgInject(File) private _file: File;
   @NgInject(Navigation) private _nav: Navigation;
+  @NgInject(PrinterOptions) protected _ds: PrinterOptions;
 
   protected _advanced: boolean = false;
-  protected _printer: Printer;
   private _f: ArrayBuffer;
   private _jobName: string;
   protected _pages: string;
@@ -29,8 +31,8 @@ export class Job extends BaseComponent {
   @NgCycle('init')
   protected async _initMe() {
     const intent = App.state.intent;
-    this._nav.title$.next(App.state.printer.name);
     await this.showLoading('Retrieving printer options');
+    this._nav.title$.next(App.state.printer.name);
     const path = intent.clipItems[0].uri;
     this._jobName = path.replace(/^.*\/([^\/]+)$/, '$1');
     const [err1, mimes] = await to(this._cups.getMimeTypes(App.state.printer));
@@ -43,13 +45,7 @@ export class Job extends BaseComponent {
       this._handleError(err3);
       this.navigate('printers');
     }
-    const [err2, ppd] = await to(this._cups.getPpd(App.state.printer));
-    if (err2) {
-      return this._handleError(err2);
-    }
     await this.hideLoading();
-    this._printer = App.state.printer;
-    this._ppd = ppd;
   }
 
   protected _select(ev: CustomEvent, group: PrinterOptionsGroup) {
