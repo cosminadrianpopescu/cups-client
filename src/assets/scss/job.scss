@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   flex: 1;
+  align-items: center;
 }
 
 cups-input {
@@ -12,4 +13,25 @@ cups-input {
   display: flex;
   flex: 1;
   justify-content: flex-end;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 1rem;
+  display: flex;
+  flex: 1;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  cups-button {
+    pointer-events: all;
+  }
+}
+
+a {
+  overflow-x: hidden;
 }

@@ -20,6 +20,18 @@
 </div>
 
 <div *ngIf="type == 'sheet'" class="flex" (click)="view._sheetSelect()">
-  <div>{{view._model}}</div>
+  <div>{{view._model.label}}</div>
   <i class="caret fa fa-caret-down"></i>
 </div>
+
+<p-sidebar class="no-height" [(visible)]="view._sheetOpened" *ngIf="type == 'sheet'" position="bottom">
+  <div class="sheet" *ngIf="view._sheetOpened">
+    <div
+      class="sheet-item"
+      *ngFor="let option of (options | sorted)"
+      (click)="view._modelChange(option)"
+      [ngClass]="{'sheet-item--selected': view._model.value == option.value}">
+      {{option.label}}
+    </div>
+  </div>
+</p-sidebar>

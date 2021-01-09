@@ -1,14 +1,12 @@
-<div>
-  <ion-item>
-    <ion-label>Server URL</ion-label>
-    <ion-input (ionChange)="view._url=$event.detail.value" [value]="view._url"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Nextcloud URL</ion-label>
-    <ion-input (ionChange)="view._ncCredentials.server=$event.detail.value" [value]="view._ncCredentials?.server"></ion-input>
-    <ion-button (click)="view._ncLogin()">Perform login</ion-button>
-  </ion-item>
-  <div>
-    <ion-button (click)="view._save()">Save</ion-button>
+<div class="flex">
+  <cups-input label="Server URL" [(model)]="view._url"></cups-input>
+  <div class="nc">
+    <cups-input label="Nextcloud URL" [model]="view._ncCredentials?.server" (modelChange)="view._ncCredentials.server = $event"></cups-input>
+    <cups-button (notify)="view._ncLogin()" label="Perform login"></cups-button>
   </div>
+  <div class="flex2">
+    <div class="left">Preview in the cloud</div>
+    <cups-checkbox [(model)]="view._previewInCloud"></cups-checkbox>
+  </div>
+  <cups-button class="center" label="Save" (notify)="view._save()"></cups-button>
 </div>

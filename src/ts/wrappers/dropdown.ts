@@ -25,6 +25,7 @@ export class Dropdown extends BaseComponent {
   @Output() public modelChange: EventEmitter<string | LabelValue> = new EventEmitter<string | LabelValue>();
 
   protected _model: LabelValue = null;
+  protected _sheetOpened: boolean = false;
 
   @NgCycle('init')
   protected _init() {
@@ -48,6 +49,7 @@ export class Dropdown extends BaseComponent {
   }
 
   protected _modelChange(x: LabelValue) {
+    this._sheetOpened = false;
     if (x == null) {
       this._model = null;
       this.modelChange.emit(null);
@@ -62,7 +64,9 @@ export class Dropdown extends BaseComponent {
     this.modelChange.emit(x.value);
   }
 
-  protected _sheetSelect() {
-    console.log('selecting');
+  protected async _sheetSelect() {
+    this._sheetOpened = true;
+    await new Promise(resolve => setTimeout(resolve));
+    document.querySelector('.sheet-item--selected').scrollIntoView({block: 'center'});
   }
 }

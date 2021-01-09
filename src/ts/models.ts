@@ -1,7 +1,8 @@
 import {Type} from '@angular/core';
 import {Intent} from '@ionic-native/web-intent/ngx';
 import {deserializers, Convertor} from './decorators';
-import {Observable} from 'rxjs';
+
+export type SettingsSection = 'url' | 'nc';
 
 export enum LogLevel {DEBUG = 0, INFO = 1, ERROR = 2};
 

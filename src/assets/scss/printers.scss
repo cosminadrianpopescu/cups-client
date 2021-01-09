@@ -8,3 +8,14 @@
   display: flex;
   flex: 1;
 }
+
+.flex-item {
+  align-items: center;
+  padding: 1rem;
+  display: flex;
+  flex: 1;
+
+  i {
+    margin-left: 0.5rem;
+  }
+}

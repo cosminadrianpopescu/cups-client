@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {WebIntent} from '@ionic-native/web-intent/ngx';
@@ -22,6 +22,7 @@ export class Main extends BaseComponent {
   @NgInject(Navigation) private _nav: Navigation;
   @NgInject(WebIntent) private __intent__: WebIntent;
   @NgInject(Cups) private __cups__: Cups;
+  @NgInject(NgZone) private _zone: NgZone;
 
   protected _title$: Observable<string>;
   protected _back: boolean = false;
@@ -37,6 +38,11 @@ export class Main extends BaseComponent {
   }
 
   initializeApp() {
+    document.addEventListener('backbutton', ev => {
+      ev.stopPropagation();
+      ev.preventDefault();
+      this._zone.run(() => this.navigate('printers'));
+    }, false);
     this.platform.ready().then(() => {
       this.beginDispatch();
       this._title$ = this._nav.title$.pipe(
@@ -88,6 +94,7 @@ export class Main extends BaseComponent {
         if (App.state.status == ServerStatus.READY) {
           const d = this.__cups__.printers.find(p => p.default);
           let dest = 'printers';
+          console.log('we have ', App, d);
           if (App.isShare && d) {
             App.state.printer = d;
             dest = 'job';

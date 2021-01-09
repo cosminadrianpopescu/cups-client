@@ -7,10 +7,11 @@ import {NextcloudCredentials} from '../nextcloud/models';
 const { Storage } = Plugins;
 const SERVER_KEY = 'servers';
 const NEXTCLOUD_KEY = 'nc';
+const PREVIEW_KEY = 'preview-in-cloud';
 
 @Injectable()
 export class Store extends BaseClass {
-  public async load<T>(key: string, type: Type<T>): Promise<T | Array<T>> {
+  public async load<T>(key: string, type?: Type<T>): Promise<T | Array<T>> {
     const result = await Storage.get({key: key});
     if (!result.value) {
       return null;
@@ -38,5 +39,13 @@ export class Store extends BaseClass {
 
   public async saveNextcloud(c: NextcloudCredentials) {
     return this.save(NEXTCLOUD_KEY, c);
+  }
+
+  public async getPreview(): Promise<boolean> {
+    return this.load(PREVIEW_KEY) as Promise<boolean>;
+  }
+
+  public async setPreview(value: boolean) {
+    return this.save(PREVIEW_KEY, value);
   }
 }

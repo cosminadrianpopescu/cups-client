@@ -2,13 +2,13 @@
   <ion-refresher-content></ion-refresher-content>
 </ion-refresher-->
 <input style="display: none" #file type="file"/>
-<cups-list [dataSource]="view._ds" [tpl]="tpl"></cups-list>
+<cups-list pull-refresh (refreshNotify)="view._retry()" [dataSource]="view._ds" [tpl]="tpl"></cups-list>
 <cups-button [hidden]="!view._error || view._isAndroid" label="Retry" icon="fa fa-undo" (notify)="view._retry()"></cups-button>
 
-<p-sidebar [(visible)]="view._from" position="bottom" [showCloseIcon]="false">
+<p-sidebar [(visible)]="view._from" position="bottom" class="no-height">
   <div class="flex-column">
-    <cups-button icon="fa fa-cloud" label="From cloud" (notify)="view._doPrint('cloud')"></cups-button>
-    <cups-button icon="fa fa-hdd" label="From local" (notify)="view._doPrint('local')"></cups-button>
+    <div class="flex-item" (click)="view._doPrint('cloud')">Print from cloud</div>
+    <div class="flex-item" (click)="view._doPrint('local')">Print from local</div>
   </div>
 </p-sidebar>
 

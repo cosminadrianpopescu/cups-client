@@ -1,7 +1,7 @@
 <p-sidebar [(visible)]="view._sidebar">
-  <div class="flex flex--column">
-    <cups-button icon="fa fa-cog" label="Settings" (notify)="view._button('settings')"></cups-button>
-    <cups-button icon="fa fa-print" label="Printers" (notify)="view._button('printers')"></cups-button>
+  <div class="flex flex--column padding">
+    <div class="flex-item-main" (click)="view._button('settings')"><i class="fa fa-cog"></i>Settings</div>
+    <div class="flex-item-main" (click)="view._button('printers')"><i class="fa fa-print"></i>Printers list</div>
   </div>
 </p-sidebar>
 <p-toolbar>

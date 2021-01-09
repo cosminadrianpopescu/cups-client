@@ -1,5 +1,5 @@
 import {Pipe} from '@angular/core';
-import {ListDatasource} from './models';
+import {ListDatasource, LabelValue} from './models';
 
 @Pipe({name: 'isSeparator'})
 export class IsSeparator<T> {
@@ -9,5 +9,12 @@ export class IsSeparator<T> {
     }
 
     return ds.separatorLabel(row);
+  }
+}
+
+@Pipe({name: 'sorted'})
+export class Sorted {
+  public transform(options: Array<LabelValue>): Array<LabelValue> {
+    return [...options].sort((a, b) => a.label < b.label ? -1 : 1);
   }
 }

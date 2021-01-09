@@ -17,17 +17,21 @@ export class PrinterOptions extends BaseClass implements ListDatasource<PrinterO
     this._printer = App.state.printer;
     this._ppd = ppd;
 
+    console.log('state is', App.state);
+
     return [
-      <any>{name: null, cupsKey: null},
-      {cupsKey: null, name: 'Standard options'},
+      {cupsKey: 'file-name', name: App.state.intent.clipItems[0].uri},
+      <any>{name: null, cupsKey: 'global'},
+      {cupsKey: 'separator', name: 'Standard options'},
       ...this._printer.options,
-      {cupsKey: null, name: 'Advanced options'},
+      {name: 'Fit to page', cupsKey: 'fit-to-page', default: false},
+      {cupsKey: 'separator', name: 'Advanced options'},
       ...this._ppd,
     ];
   }
 
   public separatorLabel(row: PrinterOptionsGroup): string {
-    if (row.cupsKey || !row.name) {
+    if (row.cupsKey != 'separator') {
       return null;
     }
     return row.name;

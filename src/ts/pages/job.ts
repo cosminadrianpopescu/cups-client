@@ -7,6 +7,8 @@ import {Cups} from '../services/cups';
 import {File} from '../services/file';
 import {Navigation} from '../services/navigation';
 import {PrinterOptions} from '../datasources/printer-options';
+import {Nextcloud} from '../nextcloud/nextcloud';
+import {Store} from '../services/store';
 
 @Component({
   selector: 'cups-job',
@@ -18,6 +20,8 @@ export class Job extends BaseComponent {
   @NgInject(Cups) private _cups: Cups;
   @NgInject(File) private _file: File;
   @NgInject(Navigation) private _nav: Navigation;
+  @NgInject(Nextcloud) private _nc: Nextcloud;
+  @NgInject(Store) private _store: Store;
   @NgInject(PrinterOptions) protected _ds: PrinterOptions;
 
   protected _advanced: boolean = false;
@@ -48,8 +52,8 @@ export class Job extends BaseComponent {
     await this.hideLoading();
   }
 
-  protected _select(ev: CustomEvent, group: PrinterOptionsGroup) {
-    group.selected = ev.detail.value;
+  protected _select(value: string, group: PrinterOptionsGroup) {
+    group.selected = value;
   }
 
   protected async _print() {
@@ -66,11 +70,27 @@ export class Job extends BaseComponent {
       return ;
     }
     await this.alert(result['statusCode']);
+    console.log('app is', App);
     if (App.isMain) {
       this.navigate('printers');
     }
     else if (App.isShare) {
       window['cordova'].plugins['exit']();
     }
+  }
+
+  protected async _preview() {
+    this.showLoading('Generating preview');
+    const inCloud = await this._store.getPreview();
+    const name = App.state.intent.clipItems[0].uri.replace(/^.*\/([^\/]+)$/, '$1');
+    if (inCloud) {
+      await this._nc.preview(new Blob([this._f]), name);
+    }
+    else {
+      const blob = new Blob([this._f]);
+      const url = URL.createObjectURL(blob);
+      Nextcloud.openUrl(url, name);
+    }
+    this.hideLoading();
   }
 }

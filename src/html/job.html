@@ -1,38 +1,29 @@
 <cups-list [tpl]="tpl" [dataSource]="view._ds"></cups-list>
+<div class="footer">
+  <cups-button styleClass="p-button-lg p-button-rounded" [isText]="false" icon="pi pi-print" (notify)="view._print()"></cups-button>
+</div>
 <ng-template #tpl let-row>
-  <div *ngIf="!row.cupsKey && !row.name" class="flex">
+  <div *ngIf="row.cupsKey == 'global'" class="flex">
     <cups-input [withBorder]="false" label="Pages" [(model)]="view._pages"></cups-input>
     <cups-input [withBorder]="false" type="numeric" label="Copies" [(model)]="view._copies"></cups-input>
   </div>
-  <div *ngIf="row.cupsKey && row.name" class="flex">
+  <div class="flex" *ngIf="row.cupsKey != 'global' && row.cupsKey != 'file-name'">
     <div>{{row.name}}</div>
     <div class="flex-right">
-      <cups-dropdown [options]="row.options | toOptions" type="sheet" [model]="row.default" (modelChange)="view._select($event, row)"></cups-dropdown>
+      <cups-dropdown
+        *ngIf="row.cupsKey != 'fit-to-page'"
+        [options]="row.options | toOptions"
+        type="sheet"
+        [isPrimitive]="true"
+        [model]="row.default"
+        (modelChange)="view._select($event, row)"></cups-dropdown>
+      <cups-checkbox
+        *ngIf="row.cupsKey == 'fit-to-page'"
+        [(model)]="row.default">
+      </cups-checkbox>
     </div>
   </div>
-</ng-template>
-<!--div>
-  <ion-list>
-    <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._printer?.options}"></ng-container>
-    <ion-item>
-      <ion-label>Fit to page</ion-label>
-      <ion-toggle [value]="view._fit" (ionChange)="view._fit = !view._fit"></ion-toggle>
-    </ion-item>
-    <ion-item-divider>Advanced options</ion-item-divider>
-    <ng-container [ngTemplateOutlet]="options" [ngTemplateOutletContext]="{$implicit: view._ppd}"></ng-container>
-  </ion-list>
-  <div class="bottom" (click)="view._print()">
-    <ion-fab><ion-fab-button><ion-icon name="print-outline"></ion-icon></ion-fab-button></ion-fab>
+  <div class="flex" *ngIf="row.cupsKey == 'file-name'">
+    <a (click)="view._preview()">{{row.name}}</a>
   </div>
-</div>
-
-<ng-template #options let-groups>
-  <ion-item *ngFor="let group of groups">
-    <ion-label>{{group.name}}</ion-label>
-    <ion-select interface="action-sheet" (ionChange)="view._select($event, group)" [value]="group.default">
-      <ion-select-option *ngFor="let option of group.options" [value]="option.key">
-        {{option.value}}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
-</ng-template-->
+</ng-template>

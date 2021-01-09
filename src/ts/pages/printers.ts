@@ -1,7 +1,8 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {IonRefresher, Platform} from '@ionic/angular';
+import {Platform} from '@ionic/angular';
 import {Subscription} from 'rxjs';
 import {BaseComponent} from '../base';
+import {Printers as PrintersDs} from '../datasources/printers';
 import {NgCycle, NgInject} from '../decorators';
 import {Printer, ServerStatus, to} from '../models';
 import {Nextcloud} from '../nextcloud/nextcloud';
@@ -9,7 +10,6 @@ import {App} from '../services/app';
 import {Cups} from '../services/cups';
 import {File} from '../services/file';
 import {Store} from '../services/store';
-import {Printers as PrintersDs} from '../datasources/printers';
 
 @Component({
   selector: 'cups-printers',
@@ -31,7 +31,6 @@ export class Printers extends BaseComponent {
   protected _selectedPrinter: Printer = null;
 
   @ViewChild('file', {static: true}) private _f: ElementRef<any>;
-  @ViewChild('refresher', {static: true}) private _refresher: IonRefresher;
 
   constructor() {
     super();
@@ -46,7 +45,6 @@ export class Printers extends BaseComponent {
 
   @NgCycle('init')
   protected async _initMe() {
-    console.log('ds is', this._ds)
     this._printers = this._cups.printers;
   }
 
@@ -94,6 +92,5 @@ export class Printers extends BaseComponent {
     await this.showLoading('Retrying server...');
     await this._cups.init();
     await this.hideLoading();
-    this._refresher.complete();
   }
 }

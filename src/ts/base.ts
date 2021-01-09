@@ -7,6 +7,9 @@ import {CycleType, METADATA, NgInject} from './decorators';
 import {App} from './services/app';
 import {Logger, LoggingInstance} from './services/logging';
 import {Loading} from './components/loading';
+import {Platform} from '@ionic/angular';
+import {Messages} from './wrappers/messages';
+import {take} from 'rxjs/operators';
 
 export class Statics {
   public static injector: Injector;
@@ -71,6 +74,8 @@ export class BaseComponent extends BaseClass {
   @NgInject(Router) protected _router: Router;
   @NgInject(Toast) private _toast: Toast;
   @NgInject(Spinner) private _spinner: Spinner;
+  @NgInject(Platform) private __platform__: Platform;
+  @NgInject(Messages) private _messages: Messages;
 
   public static UUID(): string {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -161,7 +166,11 @@ export class BaseComponent extends BaseClass {
   }
 
   protected async alert(message: string) {
-    return this._toast.show(message, '3000', 'center').toPromise();
+    if (this.__platform__.is('desktop')) {
+      this._messages.toast(message);
+      return ;
+    }
+    return this._toast.show(message, '3000', 'bottom').pipe(take(1)).toPromise();
   }
 }
 

@@ -1,0 +1,8 @@
+<span *ngIf="withSwitch">
+  <p-inputSwitch [ngModel]="model" [inputId]="id" (ngModelChange)="modelChange.emit($event)"></p-inputSwitch>
+  <label class="label label--switch" [for]="id">{{label}}</label>
+</span>
+<span *ngIf="!withSwitch">
+  <p-checkbox [binary]="true" [ngModel]="model" [inputId]="id" (ngModelChange)="modelChange.emit($event)"></p-checkbox>
+  <label class="label" [for]="id">{{label}}</label>
+</span>

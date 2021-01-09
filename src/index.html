@@ -140,11 +140,19 @@
     [ng-reflect-severity="disabled"]>.p-tag {
       background: var(--surface-d);
     }
+
+    p-sidebar.no-height > .p-sidebar-bottom {
+      height: auto !important;
+    }
   </style>
 
   <style>
-    cups-printers, cups-job {
+    cups-printers, cups-job, cups-settings {
       width: 100%;
+    }
+
+    cups-job {
+      overflow-y: auto;
     }
   </style>
 </head>

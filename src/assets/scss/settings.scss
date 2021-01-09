@@ -1,0 +1,43 @@
+.flex {
+  display: flex;
+  width: 100%;
+  padding: 1rem;
+  flex-direction: column;
+}
+
+.flex2 {
+  display: flex;
+  width: 100%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  color: var(--text-color);
+
+  .left {
+    display: flex;
+    flex: 1;
+  }
+}
+
+.nc {
+  cups-input {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    ::ng-deep .p-float-label {
+      width: 100%;
+    }
+  }
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  width: 100%;
+}
+
+cups-input {
+  width: 100%;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
