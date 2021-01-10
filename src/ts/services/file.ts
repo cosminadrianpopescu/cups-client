@@ -53,7 +53,6 @@ export class File extends BaseClass {
       reject(err);
     }
     const reader = new window['NgFileReader']();
-    console.log('got reader', reader);
     const r: FileReader = reader['__zone_symbol__originalInstance'] || reader;
 
     r.onloadend = function() {
@@ -76,13 +75,15 @@ export class File extends BaseClass {
         return ;
       }
       if (!path.match(/^file:\/\//g)) {
-        console.log('path not matching local');
         // resolve(new ArrayBuffer(0));
         // return ;
         this._read(this._file, resolve, reject, mimeTypes);
         this._file = null;
         return ;
       }
+      // console.log('reading', decodeURIComponent(path.replace(/^file:\/\//g, '')));
+      // const result = await Filesystem.readFile({path: decodeURIComponent(path.replace(/^file:\/\//g, '')),});
+      // resolve(<any>result.data);
       window['resolveLocalFileSystemURL'](path, e => {
         e['file']((f: Blob) => {
           this._read(f, resolve, reject, mimeTypes);

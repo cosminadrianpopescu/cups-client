@@ -170,7 +170,7 @@ export class BaseComponent extends BaseClass {
       this._messages.toast(message);
       return ;
     }
-    return this._toast.show(message, '3000', 'bottom').pipe(take(1)).toPromise();
+    this._toast.show(message, '3000', 'bottom').subscribe(() => {});
   }
 }
 
