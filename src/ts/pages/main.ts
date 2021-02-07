@@ -76,41 +76,43 @@ export class Main extends BaseComponent {
         this.__intent__.onIntent(),
         this.__cups__.status$,
       ).subscribe(async ([intent, status]) => {
-        console.log('data is', intent, status);
-        if (status == ServerStatus.ERROR) {
-          this._handleError(App.state.error);
-          this.finishDispatch(true, resolve);
-          return ;
-        }
-        App.state.status = status;
-        App.state.intent = intent;
-        await this.hideLoading();
-        if (App.state.status == ServerStatus.NO_SERVER && !this._router.url.match(/servers$/g)) {
-          await this.navigate('servers');
-          this.finishDispatch(true, resolve);
-          return ;
-        }
-
-        if (App.state.status == ServerStatus.READY) {
-          const d = this.__cups__.printers.find(p => p.default);
-          let dest = 'printers';
-          console.log('we have ', App, d);
-          if (App.isShare && d) {
-            App.state.printer = d;
-            dest = 'job';
+        this._zone.run(async () => {
+          console.log('data is', intent, status);
+          if (status == ServerStatus.ERROR) {
+            this._handleError(App.state.error);
+            this.finishDispatch(true, resolve);
+            return ;
           }
-          this.navigate(dest);
-          this.finishDispatch(true, resolve);
-          return ;
-        }
+          App.state.status = status;
+          App.state.intent = intent;
+          await this.hideLoading();
+          if (App.state.status == ServerStatus.NO_SERVER && !this._router.url.match(/servers$/g)) {
+            await this.navigate('settings');
+            this.finishDispatch(true, resolve);
+            return ;
+          }
 
-        if (this._router.url.match(/job$/) && App.state.intent.clipItems.length == 0) {
-          await this.navigate('printers');
-          this.finishDispatch(true, resolve);
-          return ;
-        }
+          if (App.state.status == ServerStatus.READY) {
+            const d = this.__cups__.printers.find(p => p.default);
+            let dest = 'printers';
+            console.log('we have ', App, d);
+            if (App.isShare && d) {
+              App.state.printer = d;
+              dest = 'job';
+            }
+            this.navigate(dest);
+            this.finishDispatch(true, resolve);
+            return ;
+          }
 
-        this.finishDispatch(false, resolve);
+          if (this._router.url.match(/job$/) && App.state.intent.clipItems.length == 0) {
+            await this.navigate('printers');
+            this.finishDispatch(true, resolve);
+            return ;
+          }
+
+          this.finishDispatch(false, resolve);
+        });
       });
     });
   }

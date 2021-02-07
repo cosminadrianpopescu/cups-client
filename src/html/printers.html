@@ -3,7 +3,9 @@
 </ion-refresher-->
 <input style="display: none" #file type="file"/>
 <cups-list pull-refresh (refreshNotify)="view._retry()" [dataSource]="view._ds" [tpl]="tpl"></cups-list>
-<cups-button [hidden]="!view._error || view._isAndroid" label="Retry" icon="fa fa-undo" (notify)="view._retry()"></cups-button>
+<div class="center">
+  <cups-button [hidden]="!view._error || view._isAndroid" label="Retry" icon="fa fa-undo" (notify)="view._retry()"></cups-button>
+</div>
 
 <p-sidebar [(visible)]="view._from" position="bottom" class="no-height">
   <div class="flex-column">

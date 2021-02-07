@@ -24,7 +24,6 @@ import {Home} from '../pages/home';
 import {Job} from '../pages/job';
 import {Main as MainPage} from '../pages/main';
 import {Printers} from '../pages/printers';
-import {Servers} from '../pages/servers';
 import {Settings} from '../pages/settings';
 import * as pipes from '../pipes';
 import {routes} from '../routing/main';
@@ -61,7 +60,7 @@ window.FileReader = FileReaderA;
 
 @NgModule({
   declarations: [
-    MainPage, Home, Servers, Printers, Job, Accordion, Option,
+    MainPage, Home, Printers, Job, Accordion, Option,
     Settings, pipes.HumanFileSize, Loading, pipes.ToOptions,
   ],
   entryComponents: [Loading],

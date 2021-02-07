@@ -44,7 +44,7 @@ export class BaseComponentWithDispatch extends BaseComponent {
         await this.hideLoading();
         if (App.state.status == ServerStatus.NO_SERVER && !this._router.url.match(/servers$/g)) {
           console.log('we got no servers');
-          this.navigate('servers');
+          this.navigate('settings');
           this.dispatch(true, resolve);
           return ;
         }

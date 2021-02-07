@@ -29,7 +29,6 @@ export class Cups extends BaseClass {
       const [err, result] = await to(this._printers(4));
       if (err) {
         App.state.error = err;
-        console.log('push error');
         this.status$.next(ServerStatus.ERROR);
         return ;
       }
@@ -266,6 +265,8 @@ export class Cups extends BaseClass {
 
   public async updateCurrent(s: CupsServer) {
     if (!this._server) {
+      await this.add(s);
+      this._server = s;
       return ;
     }
     this._server.url = s.url;

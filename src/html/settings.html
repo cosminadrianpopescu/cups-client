@@ -1,12 +1,11 @@
 <div class="flex">
-  <cups-input label="Server URL" [(model)]="view._url"></cups-input>
-  <div class="nc">
-    <cups-input label="Nextcloud URL" [model]="view._ncCredentials?.server" (modelChange)="view._ncCredentials.server = $event"></cups-input>
-    <cups-button (notify)="view._ncLogin()" label="Perform login"></cups-button>
-  </div>
+  <b-input label="Server URL" [(model)]="view._url"></b-input>
   <div class="flex2">
     <div class="left">Preview in the cloud</div>
-    <cups-checkbox [(model)]="view._previewInCloud"></cups-checkbox>
+    <b-checkbox [model]="view._previewInCloud" (modelChange)="view._previewChange($event)"></b-checkbox>
   </div>
-  <cups-button class="center" label="Save" (notify)="view._save()"></cups-button>
+  <div class="nc">
+    <b-input label="Nextcloud URL" [model]="view._ncCredentials?.server" (modelChange)="view._ncCredentials.server = $event"></b-input>
+  </div>
+  <b-button class="center" label="Perform login" (notify)="view._ncLogin()"></b-button>
 </div>

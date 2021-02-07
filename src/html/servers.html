@@ -1,9 +1,0 @@
-<div [hidden]="!view._loaded">
-  <ion-item>
-    <ion-label position="floating">URL</ion-label>
-    <ion-input [value]="view._url" (keypress)="view._keypress($event)" (ionChange)="view._change($event)"></ion-input>
-  </ion-item>
-  <div class="ion-padding">
-    <ion-button expand="block" type="submit" class="ion-no-margin" (click)="view._add()">Add server</ion-button>
-  </div>
-</div>

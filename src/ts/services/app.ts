@@ -21,6 +21,11 @@ export class App {
     return App.state.intent.action.match(/SEND(_MULTIPLE)?$/) ? true : false;
   }
 
+  public static get currentFile(): string {
+    return App.state.intent.extras['android.intent.extra.SUBJECT'] || 
+      App.state.intent.clipItems[0].uri;
+  }
+
   private static _arrayCompare(a1: Array<string>, a2: Array<string>): boolean {
     if (!Array.isArray(a1) || !Array.isArray(a2)) {
       return false;

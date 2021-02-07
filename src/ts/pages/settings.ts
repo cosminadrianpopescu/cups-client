@@ -19,14 +19,15 @@ export class Settings extends BaseComponent {
   @NgInject(Store) private _store: Store;
   @NgInject(Cups) private _cups: Cups;
   @NgInject(Nextcloud) private _nc: Nextcloud;
+  private _currentUrl: string;
 
   @NgCycle('init')
   protected async _initMe() {
     const servers = await this._store.servers();
     this._previewInCloud = await this._store.getPreview();
-    console.log('preview is', this._previewInCloud);
     if (servers.length == 1) {
       this._url = servers[0].url;
+      this._currentUrl = this._url;
     }
     this._ncCredentials = await this._store.nextcloud();
     if (!this._ncCredentials) {
@@ -34,10 +35,12 @@ export class Settings extends BaseComponent {
     }
   }
 
-  protected async _save() {
+  @NgCycle('destroy')
+  protected async _destroyMe() {
+    if (this._currentUrl == this._url) {
+      return ;
+    }
     await this._cups.updateCurrent(<CupsServer>{url: this._url});
-    await this._store.setPreview(this._previewInCloud);
-    this.navigate('printers');
   }
 
   protected async _ncLogin() {
@@ -56,5 +59,10 @@ export class Settings extends BaseComponent {
     if (result) {
       await this._store.saveNextcloud(result);
     }
+  }
+
+  protected _previewChange(value: boolean) {
+    this._store.setPreview(value);
+    this._previewInCloud = value;
   }
 }

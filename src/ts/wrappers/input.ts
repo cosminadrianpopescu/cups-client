@@ -20,6 +20,7 @@ export class TextInput extends BaseComponent {
   @Output() public iconClick = new EventEmitter();
   @Output() public keyup: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>();
   @Output() public modelChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public blur = new EventEmitter();
   
   @ViewChild('input', {static: false}) public input: ElementRef<any>;
 

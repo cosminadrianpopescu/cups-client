@@ -70,7 +70,6 @@ export class Job extends BaseComponent {
       return ;
     }
     await this.alert(result['statusCode']);
-    console.log('app is', App);
     if (App.isMain) {
       this.navigate('printers');
     }

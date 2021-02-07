@@ -8,6 +8,7 @@ import {BaseClass} from '../base';
 import {NgInject} from '../decorators';
 import {to} from '../models';
 import {Nextcloud} from '../nextcloud/nextcloud';
+import {App} from './app';
 
 @Injectable()
 export class File extends BaseClass {
@@ -66,7 +67,6 @@ export class File extends BaseClass {
 
   public readFile(path: string, mimeTypes?: Array<string>): Promise<ArrayBuffer> {
     return new Promise<ArrayBuffer>(async (resolve, reject) => {
-      console.log('path is', path);
       if (path.match('nc://')) {
         const p = /^nc:\/\/(.*)$/;
         const name = path.replace(p, '$1');
@@ -74,7 +74,7 @@ export class File extends BaseClass {
         this._read(new Blob([data]), resolve, reject, mimeTypes);
         return ;
       }
-      if (!path.match(/^file:\/\//g)) {
+      if (!App.isShare) {
         // resolve(new ArrayBuffer(0));
         // return ;
         this._read(this._file, resolve, reject, mimeTypes);
@@ -82,8 +82,32 @@ export class File extends BaseClass {
         return ;
       }
       // console.log('reading', decodeURIComponent(path.replace(/^file:\/\//g, '')));
-      // const result = await Filesystem.readFile({path: decodeURIComponent(path.replace(/^file:\/\//g, '')),});
+      // const result = await Filesystem.readFile({path: decodeURIComponent(path),});
       // resolve(<any>result.data);
+      // window['requestFileSystem'](1, 0, fs => {
+      //   console.log('fs is', fs);
+      //   fs.root.getFile(path, {create: false}, e => {
+      //     e['file']((f: Blob) => {
+      //       // f['localURL'] = e['nativeURL'].replace(/^file:\/\//g, '');
+      //       this._read(f, resolve, reject, mimeTypes);
+      //     });
+      //   }, err => {
+      //     console.log('err is', err);
+      //   });
+      // }, err => {
+      //   console.log('err is', err);
+      // });
+      // window['getFile'](path, {create: false}, e => {
+      //   e['file']((f: Blob) => {
+      //     // f['localURL'] = e['nativeURL'].replace(/^file:\/\//g, '');
+      //     this._read(f, resolve, reject, mimeTypes);
+      //   });
+      // }, err => {
+      //   if (err['code'] && err['code'] == 1) {
+
+      //   }
+      //   reject(err);
+      // })
       window['resolveLocalFileSystemURL'](path, e => {
         e['file']((f: Blob) => {
           this._read(f, resolve, reject, mimeTypes);
